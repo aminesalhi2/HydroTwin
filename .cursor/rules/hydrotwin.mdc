@@ -1,0 +1,38 @@
+# HydroTwin Project Rules & Hard Constraints
+
+## 1. Honesty & Attribution
+- ALL data is simulated and calibrated against published literature and reports.
+- Every UI screen MUST display the prominent banner:
+  `"Simulated data - not SONEDE or operator data"`
+- An expandable "Assumptions" panel MUST be present on screens, documenting electricity tariffs, minimum pressures, outage windows, leak severity thresholds, and demand models.
+- Never present simulated results as real savings.
+- Tunisian water loss rates MUST always be quoted as a realistic range (25% to 50%), never a single misleading number.
+
+## 2. Decision Support, Not Autonomous Control
+- "The system ADVISES, humans DECIDE."
+- Under no circumstances should the system trigger automated pump actuation or remote valve control.
+- All recommendations must clearly provide actionable advice and a rationale for human water operators.
+
+## 3. Decision Assistant & Offline Reliability
+- The AI assistant rephrases structured outputs from the hydraulic and ML modules.
+- It must NEVER hallucinate or invent a leak that has not been confirmed by the analytical pipeline.
+- It must function 100% offline using deterministic template-based generation (with an optional LLM rephraser enabled strictly via environment variable).
+
+## 4. Reproducibility & Fixed Seeds
+- All stochastic processes (data generation, model training, sensor noise) MUST use fixed random seeds defined in `config.py`.
+- Generated datasets and trained models must be persistable to `data/` and `models/`.
+- The entire pipeline can be reproduced using standard scripts or `make`.
+
+## 5. Honest Evaluation on Unseen Scenarios
+- Evaluation MUST be conducted on unseen scenarios (different leak nodes, pipes, sizes, and demand conditions).
+- Split by scenario, NEVER by row.
+- Report honest metrics for both Rich (dense) and Sparse sensor configurations, documenting the performance drop.
+
+## 6. Official Library API Adherence
+- Never invent or fabricate library functions or APIs.
+- Adhere strictly to WNTR and EPANET documented APIs and installed source code.
+
+## 7. Fast Demo Speed & Precomputation
+- Scenarios must respond within seconds.
+- All heavy simulations and models must be precomputed and cached in `data/` and `models/`.
+- A guided 6-step "Demo Mode" must load cached results for a seamless 3-minute live presentation.
