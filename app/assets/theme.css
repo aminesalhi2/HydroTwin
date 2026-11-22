@@ -518,6 +518,16 @@ p, span, label {
   border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
 }
 
+.ht-sidebar-section {
+  color: rgba(255, 255, 255, 0.88) !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  margin-top: 14px !important;
+  margin-bottom: 6px !important;
+}
+
 [data-testid="stSidebar"] p,
 [data-testid="stSidebar"] span,
 [data-testid="stSidebar"] label {
@@ -603,6 +613,46 @@ div[data-baseweb="menu"] li:hover {
   border: none !important;
   border-radius: 4px !important;
   font-size: 0.76rem !important;
+}
+
+/* Main Page Segmented Control (Top Stepper) */
+div[data-testid="stSegmentedControl"] {
+  margin-bottom: 12px !important;
+}
+
+div[data-testid="stSegmentedControl"] [data-testid="stButtonGroup"] {
+  background-color: #FFFFFF !important;
+  border: 1px solid var(--hairline) !important;
+  border-radius: var(--radius-md) !important;
+  padding: 3px !important;
+  box-shadow: var(--shadow-subtle) !important;
+  display: flex !important;
+  width: 100% !important;
+}
+
+div[data-testid="stSegmentedControl"] button[data-testid="stBaseButton-segmented_control"] {
+  flex: 1 !important;
+  background-color: transparent !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid transparent !important;
+  font-weight: 500 !important;
+  font-size: 0.82rem !important;
+  border-radius: var(--radius-sm) !important;
+  padding: 8px 16px !important;
+  transition: all 0.15s ease !important;
+}
+
+div[data-testid="stSegmentedControl"] button[data-testid="stBaseButton-segmented_control"]:hover {
+  background-color: var(--teal-light) !important;
+  color: var(--teal) !important;
+}
+
+div[data-testid="stSegmentedControl"] button[data-testid="stBaseButton-segmented_control"][aria-checked="true"],
+div[data-testid="stSegmentedControl"] button[data-testid="stBaseButton-segmented_controlActive"] {
+  background-color: var(--ink) !important;
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+  border-radius: var(--radius-sm) !important;
 }
 
 /* Sidebar Captions */

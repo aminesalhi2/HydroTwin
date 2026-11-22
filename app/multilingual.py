@@ -139,60 +139,60 @@ def get_language_container_css(lang: str) -> str:
 # -------------------------------------------------------------
 TEMPLATES = {
     "en": {
-        "title_leak": "🚨 HYDRAULIC LEAK ALERT & WORK ORDER",
-        "title_healthy": "✅ NETWORK OPERATIONAL STATUS: HEALTHY",
-        "severity_label": "Severity Level",
-        "district_label": "Estimated District",
-        "priority_label": "Inspection Priority",
-        "water_loss_label": "Estimated Physical Discharge",
-        "suspects_header": "🔍 Ranked Pipes to Inspect First (Confidence Order):",
-        "suspect_line": "Rank {rank}: Pipe {pipe_id} in {district} — Confidence: {confidence}%",
-        "action_header": "📋 Recommended Operational Action:",
+        "title_leak": "Hydraulic Leak Alert & Work Order",
+        "title_healthy": "Network Operational Status: Healthy",
+        "severity_label": "Severity",
+        "district_label": "District",
+        "priority_label": "Priority",
+        "water_loss_label": "Physical Loss Rate",
+        "suspects_header": "Ranked Inspection Pipes (Confidence):",
+        "suspect_line": "Rank {rank}: Pipe {pipe_id} ({district}) — {confidence}%",
+        "action_header": "Recommended Operational Action:",
         "action_leak": "Deploy acoustic listening stick / correlator crew starting at Pipe {pipe_id}. Throttling is NOT recommended until visual confirmation is secured.",
-        "action_healthy": "All district water balances and node pressures conform to operational standards. No dispatch required.",
-        "footer_advisory": "⚠️ Based on hydraulic digital twin simulation. The system ADVISES, human operators DECIDE.",
+        "action_healthy": "All district water balances and node pressures conform to operational standards. No field dispatch required.",
+        "footer_advisory": "Simulated digital twin advisory. Certified human operators retain sole execution authority.",
     },
     "fr": {
-        "title_leak": "🚨 ALERTE DE FUITE HYDRAULIQUE & ORDRE DE MISSION",
-        "title_healthy": "✅ ÉTAT OPÉRATIONNEL DU RÉSEAU : NORMAL",
-        "severity_label": "Niveau de sévérité",
-        "district_label": "Quartier estimé",
-        "priority_label": "Priorité d'intervention",
-        "water_loss_label": "Débit physique estimé",
-        "suspects_header": "🔍 Canalisations suspectes à inspecter en priorité :",
-        "suspect_line": "Rang {rank} : Conduite {pipe_id} dans {district} — Confiance : {confidence}%",
-        "action_header": "📋 Action opérationnelle recommandée :",
-        "action_leak": "Dépêcher une équipe de détection acoustique / corrélateur en débutant par la conduite {pipe_id}. Aucune coupure de vanne avant confirmation visuelle sur le terrain.",
-        "action_healthy": "Les bilans hydrauliques sectoriels et les pressions aux nœuds sont conformes aux normes. Aucune intervention requise.",
-        "footer_advisory": "⚠️ Basé sur la simulation du jumeau numérique. Le système CONSEILLE, l'opérateur DÉCIDE.",
+        "title_leak": "Alerte de Fuite & Ordre de Mission",
+        "title_healthy": "État Opérationnel du Réseau : Normal",
+        "severity_label": "Sévérité",
+        "district_label": "Quartier",
+        "priority_label": "Priorité",
+        "water_loss_label": "Débit de perte estimé",
+        "suspects_header": "Canalisations à inspecter (confiance) :",
+        "suspect_line": "Rang {rank} : Conduite {pipe_id} ({district}) — {confidence}%",
+        "action_header": "Action opérationnelle recommandée :",
+        "action_leak": "Dépêcher une équipe de détection acoustique / corrélateur sur la conduite {pipe_id}. Aucune coupure de vanne avant confirmation visuelle.",
+        "action_healthy": "Les bilans sectoriels et pressions sont conformes aux normes. Aucune intervention requise.",
+        "footer_advisory": "Conseil issu du jumeau numérique. L'opérateur certifié conserve l'autorité décisionnelle.",
     },
     "ar": {
-        "title_leak": "🚨 إنذار تسرب هيدروليكي وأمر مهمة ميدانية",
-        "title_healthy": "✅ الحالة التشغيلية للشبكة: سليمة ومستقرة",
+        "title_leak": "إنذار تسرب هيدروليكي وأمر مهمة ميدانية",
+        "title_healthy": "الحالة التشغيلية للشبكة: سليمة ومستقرة",
         "severity_label": "درجة الخطورة",
-        "district_label": "المنطقة / الحي المقدر",
+        "district_label": "المنطقة / الحي",
         "priority_label": "أولوية التدخل",
         "water_loss_label": "التدفق المهدور التقديري",
-        "suspects_header": "🔍 الأنابيب المشتبه بها المطلوب فحصها أولاً (حسب درجة التأكد):",
-        "suspect_line": "المرتبة {rank}: الأنبوب {pipe_id} في {district} — نسبة الثقة: {confidence}%",
-        "action_header": "📋 الإجراء التشغيلي الموصى به:",
-        "action_leak": "إرسال فريق الفحص الصوتي (Acoustic Correlator) للبدء بفحص الأنبوب {pipe_id}. يُمنع إغلاق الصمامات آلياً قبل التأكد الميداني المباشر من وجود الكسر.",
-        "action_healthy": "الموازنة المائية لجميع المناطق والضغوط في الحدود الطبيعية المعتمدة. لا توجد حاجة لتدخل ميداني.",
-        "footer_advisory": "⚠️ مبني على المحاكاة الهيدروليكية للتوأم الرقمي. النظام يُرشد ويقترح، والقرار النهائي للمهندس البشري.",
+        "suspects_header": "الأنابيب المشتبه بها (حسب نسبة الثقة):",
+        "suspect_line": "المرتبة {rank}: الأنبوب {pipe_id} ({district}) — {confidence}%",
+        "action_header": "الإجراء التشغيلي الموصى به:",
+        "action_leak": "إرسال فريق الفحص الصوتي للبدء بفحص الأنبوب {pipe_id}. يُمنع إغلاق الصمامات قبل التأكد الميداني المباشر.",
+        "action_healthy": "الموازنة المائية لجميع المناطق والضغوط في الحدود الطبيعية. لا توجد حاجة لتدخل ميداني.",
+        "footer_advisory": "إرشاد استشاري من التوأم الرقمي. القرار النهائي للمهندس البشري المسؤول.",
     },
     "ja": {
-        "title_leak": "🚨 水理漏水警報および現場点検指示書",
-        "title_healthy": "✅ 配水ネットワーク健全性ステータス：正常",
-        "severity_label": "深刻度レベル",
-        "district_label": "推定対象区域（地区）",
+        "title_leak": "水理漏水警報および現場点検指示書",
+        "title_healthy": "配水ネットワーク健全性ステータス：正常",
+        "severity_label": "深刻度",
+        "district_label": "対象区域",
         "priority_label": "点検優先度",
         "water_loss_label": "推定物理漏水量",
-        "suspects_header": "🔍 最優先点検対象管路リスト（確信度順位）:",
-        "suspect_line": "第{rank}位: 管路 {pipe_id}（{district}）— 確信度: {confidence}%",
-        "action_header": "📋 推奨される運用アクション:",
-        "action_leak": "音聴棒・相関式漏水探知チームを管路 {pipe_id} に派遣してください。目視確認が完了するまで、自動での仕切弁閉塞は推奨されません。",
+        "suspects_header": "最優先点検対象管路（確信度順）:",
+        "suspect_line": "第{rank}位: 管路 {pipe_id}（{district}）— {confidence}%",
+        "action_header": "推奨運用アクション:",
+        "action_leak": "音聴棒・相関式漏水探知チームを管路 {pipe_id} に派遣してください。目視確認が完了するまで仕切弁閉塞は非推奨です。",
         "action_healthy": "全配水ブロックの流量バランスおよび節点圧力は管理基準内です。現場出動の必要はありません。",
-        "footer_advisory": "⚠️ デジタルツイン水理シミュレーションに基づく助言です。システムは助言を行い、最終決定は現場管理者が行います。",
+        "footer_advisory": "デジタルツイン水理シミュレーションに基づく助言です。最終決定は現場管理者が行います。",
     }
 }
 
@@ -213,16 +213,22 @@ def generate_work_order(
     priority_map = {
         "minor": {"en": "Standard (Within 48h)", "fr": "Normale (Sous 48h)", "ar": "عادية (خلال 48 ساعة)", "ja": "通常（48時間以内）"},
         "moderate": {"en": "High (Within 12h)", "fr": "Haute (Sous 12h)", "ar": "مرتفعة (خلال 12 ساعة)", "ja": "高（12時間以内）"},
-        "critical": {"en": "URGENT (Immediate Dispatch)", "fr": "URGENT (Intervention immédiate)", "ar": "عاجلة جداً (تدخل فوري)", "ja": "緊急（即時現場派遣）"},
+        "critical": {"en": "URGENT (Immediate)", "fr": "URGENT (Immédiat)", "ar": "عاجلة جداً (فوري)", "ja": "緊急（即時派遣）"},
         "none": {"en": "None", "fr": "Aucune", "ar": "لا يوجد", "ja": "なし"}
     }
     
     if not has_leak:
         body = f"""
-        <div class="multilingual-card">
-            <h4 style="margin-top: 0; color: #2e7d32;">{t['title_healthy']}</h4>
-            <p>{t['action_healthy']}</p>
-            <div style="font-size: 0.8rem; color: #7f8c8d; margin-top: 12px;">{t['footer_advisory']}</div>
+        <div class="ht-ticket multilingual-card">
+            <div class="ht-ticket-header">
+                <div>
+                    <span class="ht-ticket-id">WO-SYS-NOMINAL</span>
+                    <span style="font-weight:600;font-size:0.92rem;margin-left:8px;color:#0B1528;">{t['title_healthy']}</span>
+                </div>
+                <span class="ht-ticket-pill healthy">NOMINAL</span>
+            </div>
+            <p style="margin:8px 0;font-size:0.84rem;color:#475569;">{t['action_healthy']}</p>
+            <div style="font-size:0.75rem;color:#94A3B8;margin-top:12px;border-top:1px solid #E2E8F0;padding-top:6px;">{t['footer_advisory']}</div>
         </div>
         """
         return {
@@ -239,60 +245,54 @@ def generate_work_order(
     
     # Severity badge styling: minor=amber, moderate=orange, critical=vermilion
     sev_badge_class = (
-        "severity-critical" if severity == "critical"
-        else "severity-moderate" if severity == "moderate"
-        else "severity-minor"
+        "critical" if severity == "critical"
+        else "moderate" if severity == "moderate"
+        else "minor"
     )
-    
-    suspect_lines = []
+
+    # Render top 5 suspects as horizontal confidence bars (column 0 flush)
+    bars_html = ""
     if suspect_pipes:
         for s in suspect_pipes[:5]:
-            suspect_lines.append(
-                t["suspect_line"].format(
-                    rank=s["rank"],
-                    pipe_id=s["pipe_id"],
-                    district=s["district"],
-                    confidence=s["probability_pct"]
-                )
+            p_id = s["pipe_id"]
+            d_name = s.get("district", "").split(" - ")[-1] if " - " in s.get("district", "") else s.get("district", "")
+            prob = float(s.get("probability_pct", 0.0))
+            bar_color = "#E11D48" if s["rank"] == 1 else "#D97706" if s["rank"] <= 3 else "#94A3B8"
+            bars_html += (
+                f'<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;font-size:0.80rem;">'
+                f'<span style="width:58px;font-family:monospace;font-weight:600;color:#0B1528;">#{s["rank"]} · P{p_id}</span>'
+                f'<span style="width:90px;color:#64748B;font-size:0.75rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{d_name}</span>'
+                f'<div style="flex:1;background:#E2E8F0;height:6px;border-radius:3px;overflow:hidden;">'
+                f'<div style="width:{prob}%;background:{bar_color};height:100%;border-radius:3px;"></div>'
+                f'</div>'
+                f'<span style="width:42px;text-align:right;font-family:monospace;font-weight:600;color:#0B1528;">{prob:.1f}%</span>'
+                f'</div>'
             )
-    suspects_formatted = "<br>".join([f"&nbsp;&nbsp;• {line}" for line in suspect_lines])
+
     action_text = t["action_leak"].format(pipe_id=top_pipe_id)
-    
-    body = f"""
-    <div class="multilingual-card ht-work-card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <h4 style="margin: 0; color: #D7263D; display:flex; align-items:center; gap:6px;">
-                {t['title_leak']}
-            </h4>
-            <div>
-                <span class="severity-badge {sev_badge_class}">{severity.upper()}</span>
-                <span class="ht-chip" style="margin-left:6px; font-weight:700;">{lang.upper()}</span>
-            </div>
-        </div>
-        <div style="margin-bottom: 8px; font-size: 0.88rem;">
-            <b>{t['district_label']}:</b> <span class="ht-chip" style="font-weight:600;">{district}</span> &nbsp;|&nbsp; 
-            <b>{t['priority_label']}:</b> <span style="font-weight:600;">{priority_str}</span>
-        </div>
-        <div style="margin-bottom: 8px; font-size: 0.88rem;">
-            <b>{t['water_loss_label']}:</b> <span style="font-weight:700; color:#D7263D;">~{water_loss_m3h:.1f} m³/h</span>
-        </div>
-        <div style="margin-top: 10px; margin-bottom: 6px; font-weight: 700; font-size: 0.88rem; color: var(--navy, #0B1F3A);">
-            {t['suspects_header']}
-        </div>
-        <div style="margin-bottom: 12px; font-size: 0.86rem; line-height: 1.6; color: #4A6080;">
-            {suspects_formatted}
-        </div>
-        <div style="margin-top: 10px; font-weight: 700; font-size: 0.88rem; color: var(--navy, #0B1F3A);">
-            {t['action_header']}
-        </div>
-        <div style="font-size: 0.88rem; margin-top: 4px; padding: 8px 12px; background: #F8FAFD; border-radius: 6px; border-left: 3px solid #1E6FD9; font-weight: 500;">
-            👉 {action_text}
-        </div>
-        <div style="font-size: 0.76rem; color: #7B8FA6; margin-top: 14px; border-top: 1px dashed #DDE3ED; padding-top: 8px;">
-            {t['footer_advisory']}
-        </div>
-    </div>
-    """
+    short_dist = district.split(" - ")[-1] if " - " in district else district
+
+    body = (
+        f'<div class="ht-ticket multilingual-card" style="border-left:3px solid #E11D48;">'
+        f'<div class="ht-ticket-header">'
+        f'<div><span class="ht-ticket-id">WO-{top_pipe_id}-2026</span>'
+        f'<span style="font-weight:600;font-size:0.92rem;margin-left:8px;color:#0B1528;">{t["title_leak"]}</span></div>'
+        f'<div style="display:flex;gap:6px;align-items:center;">'
+        f'<span class="ht-ticket-pill {sev_badge_class}">{severity.upper()}</span>'
+        f'<span class="ht-ticket-pill" style="background:#F1F5F9;color:#64748B;">{lang.upper()}</span></div>'
+        f'</div>'
+        f'<div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;margin-bottom:12px;font-size:0.80rem;background:#F8F9FA;padding:8px 10px;border-radius:6px;border:1px solid #E2E8F0;">'
+        f'<div><span style="color:#64748B;">{t["district_label"]}:</span> <b style="color:#0B1528;">{short_dist}</b></div>'
+        f'<div><span style="color:#64748B;">{t["priority_label"]}:</span> <b style="color:#0B1528;">{priority_str}</b></div>'
+        f'<div><span style="color:#64748B;">{t["water_loss_label"]}:</span> <b style="color:#E11D48;">~{water_loss_m3h:.1f} m³/h</b></div>'
+        f'</div>'
+        f'<div style="margin-bottom:6px;font-weight:600;font-size:0.78rem;color:#0B1528;text-transform:uppercase;letter-spacing:0.04em;">{t["suspects_header"]}</div>'
+        f'<div style="margin-bottom:12px;">{bars_html}</div>'
+        f'<div style="margin-bottom:4px;font-weight:600;font-size:0.78rem;color:#0B1528;text-transform:uppercase;letter-spacing:0.04em;">{t["action_header"]}</div>'
+        f'<div style="font-size:0.82rem;padding:8px 12px;background:#F8F9FA;border-radius:6px;border-left:3px solid #0D9488;color:#0B1528;line-height:1.4;">{action_text}</div>'
+        f'<div style="font-size:0.72rem;color:#94A3B8;margin-top:10px;border-top:1px solid #E2E8F0;padding-top:6px;">{t["footer_advisory"]}</div>'
+        f'</div>'
+    )
     
     return {
         "title": t["title_leak"],

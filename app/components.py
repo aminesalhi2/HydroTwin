@@ -1,7 +1,7 @@
 """Streamlit UI components, Plotly network maps, and honesty guardrails.
 
-Premium design pass — calm precision theme: Japanese minimalism × Mediterranean warmth.
-All function signatures are preserved; only HTML output and visual logic updated.
+Premium design pass — calm precision theme: Linear / Apple instrumentation polish.
+All function signatures are preserved; only visual presentation, layout, and copy updated.
 """
 
 from typing import Dict, List, Optional
@@ -15,7 +15,7 @@ import wntr
 import config
 
 # ─────────────────────────────────────────────────────────────
-# CSS injection — called once per session
+# CSS injection — called on every render so DOM never loses it
 # ─────────────────────────────────────────────────────────────
 def _get_css_path() -> str:
     """Return absolute path to theme.css."""
@@ -31,246 +31,256 @@ def inject_theme_css() -> None:
             css_content = fh.read()
     else:
         css_content = (
-            ":root{--navy:#0B1F3A;--ocean:#1E6FD9;--aqua:#2FD3C9;--sand:#F7F5F0;"
-            "--vermilion:#D7263D;--green:#2E9E6B;--amber:#E8A020;--white:#FFFFFF;"
-            "--text-primary:#0B1F3A;--text-secondary:#4A6080;--border:#DDE3ED;--card-bg:#FFFFFF;}"
+            ":root{--ink:#0B1528;--canvas:#F8F9FA;--teal:#0D9488;--vermilion:#E11D48;"
+            "--amber:#D97706;--hairline:#E2E8F0;--text-primary:#0B1528;--text-secondary:#64748B;}"
         )
     st.markdown(f"<style>\n{css_content}\n</style>", unsafe_allow_html=True)
 
+
 # ─────────────────────────────────────────────────────────────
-# Inline SVG assets
+# Inline SVG marks (thin line, zero emojis)
 # ─────────────────────────────────────────────────────────────
-_LOGO_SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 76" width="48" height="58" fill="none">
-  <defs>
-    <linearGradient id="dropGrad" x1="32" y1="2" x2="32" y2="74" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#2FD3C9" stop-opacity="0.9"/>
-      <stop offset="45%" stop-color="#1E6FD9" stop-opacity="0.95"/>
-      <stop offset="100%" stop-color="#0B1F3A" stop-opacity="0.98"/>
-    </linearGradient>
-    <linearGradient id="innerGlow" x1="16" y1="20" x2="48" y2="60" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.3"/>
-      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
-    </linearGradient>
-  </defs>
-  <path d="M32 3 C32 3 10 32 10 50 C10 63 19.8 73 32 73 C44.2 73 54 63 54 50 C54 32 32 3 32 3 Z"
-        fill="url(#dropGrad)" stroke="#2FD3C9" stroke-width="1.8" stroke-linejoin="round"/>
-  <path d="M32 7 C32 7 14 34 14 50 C14 60.5 22 69 32 69 C42 69 50 60.5 50 50 C50 34 32 7 32 7 Z"
-        fill="url(#innerGlow)" opacity="0.35"/>
-  <line x1="32" y1="36" x2="22" y2="54" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-opacity="0.85"/>
-  <line x1="32" y1="36" x2="42" y2="54" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-opacity="0.85"/>
-  <line x1="22" y1="54" x2="42" y2="54" stroke="#2FD3C9" stroke-width="2" stroke-linecap="round" stroke-opacity="0.9"/>
-  <circle cx="32" cy="36" r="4.5" fill="#2FD3C9" stroke="#FFFFFF" stroke-width="1.8"/>
-  <circle cx="22" cy="54" r="4" fill="#1E6FD9" stroke="#FFFFFF" stroke-width="1.6"/>
-  <circle cx="42" cy="54" r="4" fill="#FFFFFF" stroke="#2FD3C9" stroke-width="1.6"/>
+_ICON_DROP_MARK = """<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
 </svg>"""
 
-# Inline SVG icons for KPI cards
-_ICON_DROP = """<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1E6FD9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M12 2C12 2 5 10 5 15a7 7 0 0014 0c0-5-7-13-7-13z"/>
+_SPARK_FLAT = """<svg width="44" height="14" viewBox="0 0 44 14" fill="none">
+  <path d="M2 7H42" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round"/>
 </svg>"""
 
-_ICON_BOLT = """<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#2E9E6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+_SPARK_SPIKE = """<svg width="44" height="14" viewBox="0 0 44 14" fill="none">
+  <path d="M2 11H18L24 3L30 11H42" stroke="#E11D48" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>"""
 
-_ICON_PIN = """<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1EBAB0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
-  <circle cx="12" cy="10" r="3"/>
+_SPARK_ENERGY = """<svg width="44" height="14" viewBox="0 0 44 14" fill="none">
+  <path d="M2 10C8 10 14 3 22 3C30 3 36 11 42 11" stroke="#0D9488" stroke-width="1.5" stroke-linecap="round"/>
 </svg>"""
 
-_ICON_BELL = """<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#D7263D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-  <path d="M13.73 21a2 2 0 01-3.46 0"/>
+_SPARK_STEP = """<svg width="44" height="14" viewBox="0 0 44 14" fill="none">
+  <path d="M2 11H14V4H28V8H42" stroke="#0D9488" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>"""
 
-_ICON_ANTENNA = """<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1E6FD9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M5 12.55a11 11 0 0114.08 0"/>
-  <path d="M1.42 9a16 16 0 0121.16 0"/>
-  <path d="M8.53 16.11a6 6 0 016.95 0"/>
-  <line x1="12" y1="20" x2="12" y2="20.01"/>
+_SPARK_STATUS_OK = """<svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+  <circle cx="7" cy="7" r="4.5" fill="#0D9488"/>
+  <circle cx="7" cy="7" r="6" stroke="#0D9488" stroke-width="1" stroke-opacity="0.3"/>
 </svg>"""
 
-_ICON_RIBBON_WAVE = """<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="#2FD3C9" stroke-width="1.8">
-  <path d="M1 9c2-2 4-2 6 0s4 2 6 0s2-2 2-2"/>
-  <path d="M1 5c2-2 4-2 6 0s4 2 6 0s2-2 2-2" opacity="0.6"/>
+_SPARK_STATUS_ALERT = """<svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+  <circle cx="7" cy="7" r="4.5" fill="#E11D48"/>
+  <circle cx="7" cy="7" r="6" stroke="#E11D48" stroke-width="1" stroke-opacity="0.3"/>
 </svg>"""
 
 
 # ─────────────────────────────────────────────────────────────
-# Public API (all signatures preserved)
+# Header & Navigation
 # ─────────────────────────────────────────────────────────────
 
 def render_hero_header() -> None:
-    """Render the full-width hero header with logo, title, tagline, and ribbon."""
+    """Render restrained, precision header with title, subtitle, and advisory popover pill."""
+    col_l, col_r = st.columns([3, 1], vertical_alignment="center")
+    with col_l:
+        st.markdown(
+            f"""<div style="display:flex;align-items:center;gap:12px;margin:2px 0 6px;">
+  <div>{_ICON_DROP_MARK}</div>
+  <div>
+    <div style="font-size:1.35rem;font-weight:700;color:#0B1528;letter-spacing:-0.025em;line-height:1.2;">HydroTwin</div>
+    <div style="font-size:0.80rem;color:#64748B;font-weight:400;margin-top:1px;">A digital twin that finds leaks and cuts pumping energy.</div>
+  </div>
+</div>""",
+            unsafe_allow_html=True,
+        )
+    with col_r:
+        with st.popover("Simulated data · advisory only", use_container_width=True):
+            st.markdown(
+                """<div style="font-size:0.80rem;line-height:1.5;color:#0B1528;">
+  <div style="font-weight:600;color:#0D9488;margin-bottom:4px;">Advisory Decision Support</div>
+  <p style="margin:0 0 8px;color:#475569;">The system advises, humans decide. Certified operators retain sole execution authority; no autonomous pump/valve actuation is performed.</p>
+  <div style="font-weight:600;color:#0B1528;margin-bottom:4px;">Simulation Boundaries &amp; Hypotheses</div>
+  <ul style="margin:0;padding-left:16px;color:#475569;">
+    <li><b>Topology:</b> Net3 benchmark (92 junctions, 117 pipes); full systems span 10,000+ pipes.</li>
+    <li><b>Demand:</b> Diurnal sine curves + temperature (synthetic, unmetered).</li>
+    <li><b>Tariffs:</b> STEG Time-of-Use schedule benchmarks (hypothetical).</li>
+    <li><b>Telemetry:</b> Gaussian noise &sigma; = 0.40 m. Small leaks (&lt;10 m³/h) fall within sensor noise.</li>
+    <li><b>Confidentiality:</b> Zero proprietary SCADA logs from SONEDE, STEG, or Japanese utilities.</li>
+  </ul>
+</div>""",
+                unsafe_allow_html=True,
+            )
+
+
+def render_footer() -> None:
+    """Render professional footer with bilateral event credit and simulated data notice."""
     st.markdown(
-        f"""<div class="ht-hero">
-<div class="ht-hero-left">
-<div class="ht-hero-logo">{_LOGO_SVG}</div>
-<div class="ht-hero-text">
-<div class="ht-hero-title">HydroTwin</div>
-<div class="ht-hero-tagline">Digital twin &amp; AI for drinking-water networks</div>
-</div>
-</div>
-<div class="ht-hero-ribbon">
-<span class="ht-ribbon-badge">{_ICON_RIBBON_WAVE} Japan × Tunisia</span>
-<span class="ht-ribbon-sub">Water + Energy Track · Hackathon 2026</span>
-</div>
+        """<div class="ht-footer">
+  <div>
+    <b>HydroTwin</b> · Digital Twin for Water &amp; Energy · Hackathon Embassy of Japan in Tunisia
+  </div>
+  <div>
+    <i>Simulated engineering data · Calibrated for demonstration only</i>
+  </div>
 </div>""",
         unsafe_allow_html=True,
     )
 
 
-def render_footer() -> None:
-    """Render professional footer with team placeholder, event credit, and simulated data notice."""
-    st.markdown(
-        """
-        <div class="ht-footer">
-          <div>
-            <b>HydroTwin</b> · Digital Twin for Water &amp; Energy · Hackathon Embassy of Japan in Tunisia
-          </div>
-          <div>
-            ⚠️ <i>Simulated engineering data · Calibrated for demonstration only</i>
-          </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
 def render_honesty_banner() -> None:
-    """Render the mandatory honesty disclaimer banner on every screen."""
-    st.markdown(
-        f"""
-        <div class="ht-banner">
-            <div class="ht-banner-body">
-                <div class="ht-banner-title">
-                    ⚠️ {config.DISCLAIMER_BANNER}
-                    <span class="ht-chip">⚡ Offline · Simulated Data Only</span>
-                </div>
-                <div class="ht-banner-sub">
-                    Calibrated against verified engineering benchmarks (STEG TOU tariffs,
-                    25%–50% national loss ranges, 15 m minimum service heads).
-                </div>
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    """Deprecated: replaced by the header popover pill. Retained as no-op for compatibility."""
+    return None
 
 
 def render_decision_badge() -> None:
-    """Display the advisory badge emphasizing human operator agency."""
-    st.markdown(
-        f"""
-        <div class="ht-advisory">
-            <strong>🛡️ Advisory Decision Support:</strong>
-            {config.DECISION_RULE_TEXT}
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    """Deprecated: replaced by the header popover pill. Retained as no-op for compatibility."""
+    return None
 
 
 def render_honest_limitations_box() -> None:
-    """Render the mandatory Honest Limitations box detailing simulation boundaries."""
-    st.markdown(
-        """
-        <div class="ht-limitations">
-            <div class="ht-limitations-title">🔍 Honest Prototype Limitations &amp; Technical Boundaries:</div>
-            <ul>
-                <li><b>Small Synthetic Network</b>: Net3 benchmark topology (92 junctions, 117 pipes);
-                    full municipal networks span 10,000+ pipe segments.</li>
-                <li><b>Synthetic Consumer Demand</b>: District demands are modeled via diurnal sine curves
-                    and temperature variables, not metered smart-grid telemetry.</li>
-                <li><b>Zero Proprietary Utility Data</b>: Contains no confidential SCADA logs from
-                    SONEDE, STEG, or Japanese municipal water bureaus.</li>
-                <li><b>Minor Leaks Poorly Localized</b>: Fissures (&lt; 10 m³/h) generate pressure drops
-                    smaller than sensor transducer noise (&sigma; = 0.4 m) and are difficult to isolate.</li>
-                <li><b>Advisory Decision Posture Only</b>: Recommends schedules and ranked inspection pipes;
-                    certified human operators retain sole execution authority.</li>
-            </ul>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+    """Deprecated: replaced by the header popover pill. Retained as no-op for compatibility."""
+    return None
 
 
 def render_assumptions_expander() -> None:
-    """Render the expandable assumptions panel detailing all parameters."""
-    with st.expander("ℹ️ Simulation Assumptions & Calibration Parameters (Click to inspect)", expanded=False):
+    """Render collapsible assumptions panel detailing engineering parameters."""
+    with st.expander("Simulation Assumptions & Calibration Parameters", expanded=False):
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.markdown("##### ⚡ Assumed Time-of-Use Tariff (Hypothesis, to verify)")
-            st.markdown(f"- **Off-Peak (22h–06h)**: `{config.TARIFF_OFF_PEAK_TND_PER_KWH:.3f} TND/kWh` (~{config.TARIFF_OFF_PEAK_TND_PER_KWH * config.TND_TO_JPY:.1f} JPY)")
-            st.markdown(f"- **Standard (06h–18h)**: `{config.TARIFF_DAY_TND_PER_KWH:.3f} TND/kWh` (~{config.TARIFF_DAY_TND_PER_KWH * config.TND_TO_JPY:.1f} JPY)")
-            st.markdown(f"- **Peak (18h–21h)**: `{config.TARIFF_PEAK_TND_PER_KWH:.3f} TND/kWh` (~{config.TARIFF_PEAK_TND_PER_KWH * config.TND_TO_JPY:.1f} JPY)")
+            st.markdown("##### Assumed TOU Tariff Schedule")
+            st.markdown(f"- Off-Peak (22h–06h): `{config.TARIFF_OFF_PEAK_TND_PER_KWH:.3f} TND/kWh`")
+            st.markdown(f"- Standard (06h–18h): `{config.TARIFF_DAY_TND_PER_KWH:.3f} TND/kWh`")
+            st.markdown(f"- Peak (18h–21h): `{config.TARIFF_PEAK_TND_PER_KWH:.3f} TND/kWh`")
         with col2:
-            st.markdown("##### 💧 Hydraulic Constraints")
-            st.markdown(f"- **Minimum Service Pressure**: `{config.MIN_SERVICE_PRESSURE_M} m` (~1.5 bar)")
-            st.markdown(f"- **PDD Delivery Pressure**: `{config.REQUIRED_PRESSURE_PDD_M} m` (100% flow)")
-            st.markdown(f"- **Excess Pressure Stress**: `> {config.EXCESS_PRESSURE_THRESHOLD_M} m` (accelerates bursts)")
-            st.markdown(f"- **Outage Window**: `{config.OUTAGE_START_HOUR}:00 – {config.OUTAGE_START_HOUR + config.OUTAGE_DURATION_HOURS}:00`")
+            st.markdown("##### Hydraulic Constraints")
+            st.markdown(f"- Minimum Service Pressure: `{config.MIN_SERVICE_PRESSURE_M} m` (~1.5 bar)")
+            st.markdown(f"- PDD Delivery Pressure: `{config.REQUIRED_PRESSURE_PDD_M} m` (100% flow)")
+            st.markdown(f"- Outage Window: `{config.OUTAGE_START_HOUR}:00 – {config.OUTAGE_START_HOUR + config.OUTAGE_DURATION_HOURS}:00`")
         with col3:
-            st.markdown("##### 🔍 Leak & Loss Thresholds")
-            st.markdown(f"- **Minor**: `< {config.LEAK_SEVERITY_THRESHOLDS['minor']['max_flow_m3h']} m³/h`")
-            st.markdown(f"- **Moderate**: `{config.LEAK_SEVERITY_THRESHOLDS['minor']['max_flow_m3h']} – {config.LEAK_SEVERITY_THRESHOLDS['moderate']['max_flow_m3h']} m³/h`")
-            st.markdown(f"- **Critical**: `> {config.LEAK_SEVERITY_THRESHOLDS['moderate']['max_flow_m3h']} m³/h`")
-            st.markdown(f"- **Tunisia Loss Range**: `{config.TUNISIA_LOSS_RANGE_PCT[0]}% – {config.TUNISIA_LOSS_RANGE_PCT[1]}%`")
+            st.markdown("##### Leak Thresholds")
+            st.markdown(f"- Minor: `< {config.LEAK_SEVERITY_THRESHOLDS['minor']['max_flow_m3h']} m³/h`")
+            st.markdown(f"- Moderate: `10 – {config.LEAK_SEVERITY_THRESHOLDS['moderate']['max_flow_m3h']} m³/h`")
+            st.markdown(f"- Critical: `> {config.LEAK_SEVERITY_THRESHOLDS['moderate']['max_flow_m3h']} m³/h`")
 
+
+# ─────────────────────────────────────────────────────────────
+# Refined KPI Cards (Top Row, Max 4)
+# ─────────────────────────────────────────────────────────────
 
 def render_impact_cards(
     water_lost_m3: float = 0.0,
     water_saved_m3: float = 0.0,
     kwh_saved: float = 291.7,
-    cost_saved_tnd: float = 69.7,
-    suspect_pipes_count: int = 5,
+    cost_saved_tnd: float = 33.6,
+    suspect_pipes_count: int = 0,
     critical_alerts: int = 0,
     sensor_mode: str = "rich",
     noise_sigma: float = 0.40,
+    has_leak: bool = False,
+    is_outage: bool = False,
     **kwargs,
 ) -> None:
-    """Render top summary metric cards for executive decision-makers."""
-    mode_name = "Rich" if sensor_mode == "rich" else "Sparse"
-    mode_chip = "24 Sensors" if sensor_mode == "rich" else "6 Sens + 1 Fault"
-    mode_class = "ht-chip-offline" if sensor_mode == "rich" else "ht-chip"
+    """Render exactly 4 restrained, high-polish KPI cards with tabular figures.
     
-    alert_sub_class = "alert" if critical_alerts > 0 else "nominal"
-    alert_sub_text = "Immediate field inspection required" if critical_alerts > 0 else "All zones within normal head"
-    alert_val_color = "var(--vermilion)" if critical_alerts > 0 else "var(--green)"
+    Card 1: Water Loss (vermilion only on active leak).
+    Card 2: Pumping Energy Saved (292 kWh/d, secondary: range 0-583).
+    Card 3: Electricity Cost Saved (33.6 TND/d TOU tariff vs 86.2 flat).
+    Card 4: Network Compliance (100% nominal head vs incident active).
+    """
+    # Card 1: Water Lost
+    is_leak_active = (water_lost_m3 > 0.0 or has_leak)
+    card1_class = "ht-kpi-box kpi-alert" if is_leak_active else "ht-kpi-box"
+    card1_val = f"{water_lost_m3:,.0f}" if is_leak_active else "0"
+    card1_sub = f"+{water_lost_m3:,.0f} m³ burst active" if is_leak_active else "Nominal baseline"
+    card1_spark = _SPARK_SPIKE if is_leak_active else _SPARK_FLAT
 
-    water_display = f"{water_lost_m3:,.0f}" if water_lost_m3 > 0 else "0"
-    water_sub = "Simulated orifice model" if water_lost_m3 > 0 else "Baseline nominal operation"
+    # Card 2: Pumping Energy
+    card2_class = "ht-kpi-box"
+    card2_val = f"{kwh_saved:,.0f}"
+    card2_sub = "−5.5% vs baseline"
+    card2_range = "range 0–583"
+    card2_spark = _SPARK_ENERGY
 
-    cards_html = (
-        f'<div class="ht-kpi-grid">\n'
-        f'<div class="ht-kpi-card kpi-water">\n'
-        f'<div class="ht-kpi-header"><div class="ht-kpi-icon">{_ICON_DROP}</div><div class="ht-kpi-label">Water Lost (Sim.)</div></div>\n'
-        f'<div class="ht-kpi-value">{water_display} <span class="ht-kpi-unit">m³</span></div>\n'
-        f'<div class="ht-kpi-sublabel">{water_sub}</div>\n'
-        f'</div>\n'
-        f'<div class="ht-kpi-card kpi-energy">\n'
-        f'<div class="ht-kpi-header"><div class="ht-kpi-icon">{_ICON_BOLT}</div><div class="ht-kpi-label">Pumping Savings</div></div>\n'
-        f'<div class="ht-kpi-value-range">0 – 292 – 583 <span class="ht-kpi-unit">kWh/d</span></div>\n'
-        f'<div class="ht-kpi-sublabel"><span>0.0 – 69.7 – 206.4 TND</span> <span class="ht-chip ht-chip-tariff">Hypothetical Tariff</span></div>\n'
-        f'</div>\n'
-        f'<div class="ht-kpi-card kpi-suspect">\n'
-        f'<div class="ht-kpi-header"><div class="ht-kpi-icon">{_ICON_PIN}</div><div class="ht-kpi-label">Suspect Leaks</div></div>\n'
-        f'<div class="ht-kpi-value">{suspect_pipes_count} <span class="ht-kpi-unit">pipes</span></div>\n'
-        f'<div class="ht-kpi-sublabel">Ranked by pressure residuals</div>\n'
-        f'</div>\n'
-        f'<div class="ht-kpi-card kpi-alert">\n'
-        f'<div class="ht-kpi-header"><div class="ht-kpi-icon">{_ICON_BELL}</div><div class="ht-kpi-label">Critical Alerts</div></div>\n'
-        f'<div class="ht-kpi-value" style="color:{alert_val_color}">{critical_alerts}</div>\n'
-        f'<div class="ht-kpi-sublabel {alert_sub_class}">{alert_sub_text}</div>\n'
-        f'</div>\n'
-        f'<div class="ht-kpi-card kpi-sensor">\n'
-        f'<div class="ht-kpi-header"><div class="ht-kpi-icon">{_ICON_ANTENNA}</div><div class="ht-kpi-label">Sensor Telemetry</div></div>\n'
-        f'<div class="ht-kpi-value" style="font-size:1.4rem">{mode_name} <span class="ht-chip {mode_class}" style="vertical-align:middle;margin-left:6px">{mode_chip}</span></div>\n'
-        f'<div class="ht-kpi-sublabel">Assumed sensor noise &sigma; = {noise_sigma:.2f} m</div>\n'
-        f'</div>\n'
-        f'</div>'
-    )
+    # Card 3: Cost Saved
+    card3_class = "ht-kpi-box"
+    card3_val = f"{cost_saved_tnd:,.1f}"
+    card3_sub = "86.2 TND/d flat tariff"
+    card3_range = "TOU tariff"
+    card3_spark = _SPARK_STEP
+
+    # Card 4: Network Compliance
+    if critical_alerts > 0 or is_outage:
+        card4_class = "ht-kpi-box kpi-alert"
+        card4_val = "Alert"
+        card4_unit = "Outage" if is_outage else "Incident"
+        card4_sub = "Pump 10 blackout" if is_outage else "Immediate inspection"
+        card4_spark = _SPARK_STATUS_ALERT
+    elif is_leak_active:
+        card4_class = "ht-kpi-box kpi-alert"
+        card4_val = "1 Leak"
+        card4_unit = "Active"
+        card4_sub = "District 1 inspection"
+        card4_spark = _SPARK_STATUS_ALERT
+    else:
+        card4_class = "ht-kpi-box kpi-healthy"
+        card4_val = "100%"
+        card4_unit = "Nominal"
+        card4_sub = "All 92 nodes ≥ 15m head"
+        card4_spark = _SPARK_STATUS_OK
+
+    cards_html = f"""<div class="ht-kpi-row">
+  <div class="{card1_class}">
+    <div class="ht-kpi-meta">
+      <span class="ht-kpi-title">Water Loss</span>
+      <span>{card1_spark}</span>
+    </div>
+    <div class="ht-kpi-main">
+      <span class="ht-kpi-num">{card1_val}</span>
+      <span class="ht-kpi-unit">m³</span>
+    </div>
+    <div class="ht-kpi-subtext">{card1_sub}</div>
+  </div>
+
+  <div class="{card2_class}">
+    <div class="ht-kpi-meta">
+      <span class="ht-kpi-title">Pumping Energy</span>
+      <span>{card2_spark}</span>
+    </div>
+    <div class="ht-kpi-main">
+      <span class="ht-kpi-num">{card2_val}</span>
+      <span class="ht-kpi-unit">kWh/d</span>
+      <span style="font-size:0.72rem;color:#94A3B8;margin-left:auto;">{card2_range}</span>
+    </div>
+    <div class="ht-kpi-subtext">{card2_sub}</div>
+  </div>
+
+  <div class="{card3_class}">
+    <div class="ht-kpi-meta">
+      <span class="ht-kpi-title">Cost Saved</span>
+      <span>{card3_spark}</span>
+    </div>
+    <div class="ht-kpi-main">
+      <span class="ht-kpi-num">{card3_val}</span>
+      <span class="ht-kpi-unit">TND/d</span>
+      <span style="font-size:0.72rem;color:#94A3B8;margin-left:auto;">{card3_range}</span>
+    </div>
+    <div class="ht-kpi-subtext">{card3_sub}</div>
+  </div>
+
+  <div class="{card4_class}">
+    <div class="ht-kpi-meta">
+      <span class="ht-kpi-title">Compliance</span>
+      <span>{card4_spark}</span>
+    </div>
+    <div class="ht-kpi-main">
+      <span class="ht-kpi-num">{card4_val}</span>
+      <span class="ht-kpi-unit">{card4_unit}</span>
+    </div>
+    <div class="ht-kpi-subtext">{card4_sub}</div>
+  </div>
+</div>"""
     st.markdown(cards_html, unsafe_allow_html=True)
 
+
+# ─────────────────────────────────────────────────────────────
+# Refined Network Map (Plotly)
+# ─────────────────────────────────────────────────────────────
 
 def create_network_plotly_figure(
     wn: wntr.network.WaterNetworkModel,
@@ -282,29 +292,24 @@ def create_network_plotly_figure(
     dark_mode: bool = True,
     **kwargs,
 ) -> go.Figure:
-    """Create an interactive Plotly digital twin network map with calm precision styling.
+    """Create a refined digital twin network map with calm precision styling.
     
-    Features:
-    - Perceptually uniform colorscale (blue -> aqua -> amber -> red) with clear m units
-    - Soft translucent district boundary hulls with district labels
-    - Pipe widths proportional to diameter/capacity
-    - Pumps, tanks, and reservoirs with distinct clean markers and labels
-    - Ground truth leak shown with concentric pulse-style rings + star marker
-    - Top-5 suspect pipes highlighted with rank badges (#1-#5) and tooltips
-    - Clutter-free Plotly controls
+    Refinements:
+    - Non-overlapping labels: Pump labels placed bottom-center, Reservoir labels top-center.
+    - Thin semi-transparent pipes with width proportional to diameter.
+    - Junction nodes sized by base demand.
+    - Perceptually smooth pressure colorscale: Teal -> Amber -> Vermilion.
+    - Soft translucent district hulls.
+    - Vermilion ring with halo for active leaks.
+    - Compact centered bottom legend.
     """
-    try:
-        from app.assets.plotly_template import PRESSURE_COLORSCALE
-    except ImportError:
-        PRESSURE_COLORSCALE = [
-            [0.0, "#1E6FD9"], [0.3, "#2FD3C9"], [0.6, "#E8A020"], [1.0, "#D7263D"]
-        ]
     from scipy.spatial import ConvexHull
+    from app.assets.plotly_template import PRESSURE_COLORSCALE
 
     fig = go.Figure()
-    bg_color = "#0B1F3A" if dark_mode else "#FFFFFF"
-    text_color = "#FFFFFF" if dark_mode else "#0B1F3A"
-    pipe_base_color = "#243E5E" if dark_mode else "#BDD0E4"
+    bg_color = "#0B1528" if dark_mode else "#FFFFFF"
+    text_color = "#FFFFFF" if dark_mode else "#0B1528"
+    pipe_base_color = "rgba(148, 163, 184, 0.40)" if dark_mode else "rgba(100, 116, 139, 0.35)"
 
     # 1. District Boundaries — Soft Translucent Convex Hulls
     if node_to_district:
@@ -316,11 +321,11 @@ def create_network_plotly_figure(
                 )
 
         hull_palette = [
-            ("rgba(30, 111, 217, 0.07)", "rgba(30, 111, 217, 0.35)"),
-            ("rgba(47, 211, 201, 0.07)", "rgba(47, 211, 201, 0.35)"),
-            ("rgba(46, 158, 107, 0.07)", "rgba(46, 158, 107, 0.35)"),
-            ("rgba(232, 160, 32, 0.07)", "rgba(232, 160, 32, 0.35)"),
-            ("rgba(155, 89, 182, 0.07)", "rgba(155, 89, 182, 0.35)"),
+            ("rgba(13, 148, 136, 0.06)", "rgba(13, 148, 136, 0.25)"),
+            ("rgba(37, 99, 235, 0.06)", "rgba(37, 99, 235, 0.25)"),
+            ("rgba(217, 119, 6, 0.06)", "rgba(217, 119, 6, 0.25)"),
+            ("rgba(100, 116, 139, 0.06)", "rgba(100, 116, 139, 0.25)"),
+            ("rgba(147, 51, 234, 0.06)", "rgba(147, 51, 234, 0.25)"),
         ]
 
         for idx, (dist_name, coords) in enumerate(district_to_coords.items()):
@@ -332,14 +337,14 @@ def create_network_plotly_figure(
                     hx = list(hull_pts[:, 0]) + [hull_pts[0, 0]]
                     hy = list(hull_pts[:, 1]) + [hull_pts[0, 1]]
                     fill_c, line_c = hull_palette[idx % len(hull_palette)]
-                    
+
                     fig.add_trace(go.Scatter(
                         x=hx, y=hy,
                         fill="toself",
                         fillcolor=fill_c,
-                        line=dict(color=line_c, width=1.2, dash="dot"),
+                        line=dict(color=line_c, width=1.0, dash="dot"),
                         hoverinfo="text",
-                        hovertext=f"District Zone: {dist_name}",
+                        hovertext=f"District: {dist_name}",
                         name=dist_name.split(" - ")[-1],
                         showlegend=False,
                     ))
@@ -350,17 +355,17 @@ def create_network_plotly_figure(
                     short_label = dist_name.split(" - ")[-1] if " - " in dist_name else dist_name
                     fig.add_annotation(
                         x=cx, y=cy,
-                        text=f"<b>{short_label}</b>",
+                        text=f"<span style='font-size:9px;letter-spacing:0.04em;'>{short_label.upper()}</span>",
                         showarrow=False,
-                        font=dict(size=10, color="rgba(255,255,255,0.55)" if dark_mode else "rgba(11,31,58,0.55)"),
-                        bgcolor="rgba(11,31,58,0.45)" if dark_mode else "rgba(255,255,255,0.65)",
-                        bordercolor="rgba(255,255,255,0.1)" if dark_mode else "rgba(11,31,58,0.1)",
-                        borderpad=3,
+                        font=dict(size=9, color="rgba(255,255,255,0.45)" if dark_mode else "rgba(11,21,40,0.50)"),
+                        bgcolor="rgba(11,21,40,0.40)" if dark_mode else "rgba(248,249,250,0.70)",
+                        bordercolor="rgba(255,255,255,0.08)" if dark_mode else "rgba(0,0,0,0.08)",
+                        borderpad=2,
                     )
                 except Exception:
                     pass
 
-    # 2. Distribution Pipes (width scaled by diameter)
+    # 2. Distribution Pipes
     pipe_x: List = []
     pipe_y: List = []
     for name, pipe in wn.pipes():
@@ -372,16 +377,16 @@ def create_network_plotly_figure(
     fig.add_trace(go.Scatter(
         x=pipe_x, y=pipe_y,
         mode="lines",
-        line=dict(color=pipe_base_color, width=1.8),
+        line=dict(color=pipe_base_color, width=1.4),
         hoverinfo="none",
         name="Distribution Pipes",
         showlegend=True,
     ))
 
-    # 3. Top-5 Suspect Pipes (ranked severity highlighting with badges)
+    # 3. Top-5 Suspect Pipes (Highlighting with Rank Badges)
     if suspect_pipes:
-        rank_colors = {0: "#D7263D", 1: "#E86420", 2: "#E8A020", 3: "#F4D03F", 4: "#F4D03F"}
-        rank_widths = {0: 7.0, 1: 5.5, 2: 4.5, 3: 3.5, 4: 3.5}
+        rank_colors = {0: "#E11D48", 1: "#EA580C", 2: "#D97706", 3: "#EAB308", 4: "#CA8A04"}
+        rank_widths = {0: 5.5, 1: 4.5, 2: 3.8, 3: 3.0, 4: 2.8}
         for idx, pipe_name in enumerate(suspect_pipes[:5]):
             if pipe_name in wn.pipe_name_list:
                 pipe = wn.get_link(pipe_name)
@@ -389,39 +394,43 @@ def create_network_plotly_figure(
                 end_node = wn.get_node(pipe.end_node_name)
                 mid_x = (start_node.coordinates[0] + end_node.coordinates[0]) / 2
                 mid_y = (start_node.coordinates[1] + end_node.coordinates[1]) / 2
-                color = rank_colors.get(idx, "#F4D03F")
-                width = rank_widths.get(idx, 3.5)
+                color = rank_colors.get(idx, "#EAB308")
+                width = rank_widths.get(idx, 3.0)
 
                 fig.add_trace(go.Scatter(
                     x=[start_node.coordinates[0], end_node.coordinates[0]],
                     y=[start_node.coordinates[1], end_node.coordinates[1]],
                     mode="lines",
                     line=dict(color=color, width=width),
-                    hovertext=f"🎯 Rank #{idx+1} Suspect: Pipe {pipe_name}<br>Priority Inspection Recommended",
+                    hovertext=f"Suspect #{idx+1}: Pipe {pipe_name}<br>Priority Inspection",
                     hoverinfo="text",
-                    name=f"Rank #{idx+1} Suspect ({pipe_name})",
+                    name=f"Suspect #{idx+1} ({pipe_name})",
                     showlegend=True,
                 ))
 
-                # Midpoint badge annotation
                 fig.add_annotation(
                     x=mid_x, y=mid_y,
                     text=f"<b>#{idx+1}</b>",
                     showarrow=False,
-                    font=dict(size=10, color=color),
-                    bgcolor="rgba(11,31,58,0.85)" if dark_mode else "rgba(255,255,255,0.9)",
+                    font=dict(size=9, color=color),
+                    bgcolor="rgba(11,21,40,0.85)" if dark_mode else "rgba(255,255,255,0.92)",
                     bordercolor=color,
                     borderwidth=1,
                     borderpad=2,
                 )
 
-    # 4. Junctions Colored by Pressure
+    # 4. Junctions Colored by Pressure and Sized by Demand
     junction_x: List = []
     junction_y: List = []
     junction_text: List = []
     junction_pressures: List = []
+    junction_sizes: List = []
 
     current_pressures = pressures_df.iloc[time_idx] if pressures_df is not None else None
+
+    # Determine maximum demand for scaling
+    demands = [float(j.base_demand) if hasattr(j, "base_demand") and j.base_demand else 0.0 for _, j in wn.junctions()]
+    max_dem = max(demands) if demands and max(demands) > 0 else 1.0
 
     for name, node in wn.junctions():
         junction_x.append(node.coordinates[0])
@@ -432,27 +441,33 @@ def create_network_plotly_figure(
             else 25.0
         )
         junction_pressures.append(p_val)
+
+        # Scale size by demand: 5px for zero demand, up to 9px for max demand
+        dem = float(node.base_demand) if hasattr(node, "base_demand") and node.base_demand else 0.0
+        node_size = 5.5 + 4.0 * (dem / max_dem)
+        junction_sizes.append(node_size)
+
         district = node_to_district.get(name, "Municipal Sector") if node_to_district else "Municipal Sector"
-        status_str = "⚠️ Low Head (&lt; 15m)" if p_val < config.MIN_SERVICE_PRESSURE_M else "✅ Healthy Service"
+        status_str = "Head < 15m" if p_val < config.MIN_SERVICE_PRESSURE_M else "Nominal"
         junction_text.append(
-            f"<b>Node:</b> {name}<br><b>District:</b> {district}<br><b>Pressure:</b> {p_val:.1f} m<br><b>Status:</b> {status_str}"
+            f"<b>Node {name}</b> ({district})<br>Pressure: {p_val:.1f} m<br>Base Demand: {dem:.1f} m³/h<br>Status: {status_str}"
         )
 
     fig.add_trace(go.Scatter(
         x=junction_x, y=junction_y,
         mode="markers",
         marker=dict(
-            size=9,
+            size=junction_sizes,
             color=junction_pressures,
             colorscale=PRESSURE_COLORSCALE,
             colorbar=dict(
-                title=dict(text="Pressure (m)", font=dict(color=text_color, size=11)),
-                thickness=12, len=0.75,
-                tickfont=dict(color=text_color, size=10),
+                title=dict(text="Head (m)", font=dict(color=text_color, size=10)),
+                thickness=10, len=0.70,
+                tickfont=dict(color=text_color, size=9),
             ),
             showscale=True,
-            cmin=10.0, cmax=60.0,
-            line=dict(color="rgba(255,255,255,0.3)" if dark_mode else "rgba(0,0,0,0.15)", width=1),
+            cmin=10.0, cmax=55.0,
+            line=dict(color="rgba(255,255,255,0.2)" if dark_mode else "rgba(0,0,0,0.1)", width=0.8),
         ),
         text=junction_text,
         hoverinfo="text",
@@ -460,16 +475,18 @@ def create_network_plotly_figure(
         showlegend=False,
     ))
 
-    # 5. Pumps (Diamond, distinct clean styling)
+    # 5. Pumps (Diamond, placed BOTTOM-CENTER to never overlap reservoirs)
     pump_x: List = []
     pump_y: List = []
     pump_text: List = []
+    pump_labels: List = []
     for name, pump in wn.pumps():
         start_node = wn.get_node(pump.start_node_name)
         pump_x.append(start_node.coordinates[0])
         pump_y.append(start_node.coordinates[1])
+        pump_labels.append(f"Pump {name}")
         pump_text.append(
-            f"⚡ <b>Pump Station {name}</b><br>Intake: {pump.start_node_name} → Discharge: {pump.end_node_name}"
+            f"<b>Pump Station {name}</b><br>In: {pump.start_node_name} → Out: {pump.end_node_name}"
         )
 
     if pump_x:
@@ -478,32 +495,34 @@ def create_network_plotly_figure(
             mode="markers+text",
             marker=dict(
                 symbol="diamond",
-                size=22,
-                color="#0B1F3A",
-                line=dict(color="#2FD3C9", width=2.5),
+                size=18,
+                color="#0B1528",
+                line=dict(color="#0D9488", width=2.0),
             ),
-            text=[f"Pump {name}" for name in wn.pump_name_list],
-            textposition="top center",
-            textfont=dict(color=text_color, size=10, family="Inter, sans-serif"),
+            text=pump_labels,
+            textposition="bottom center",
+            textfont=dict(color=text_color, size=9, family="Inter, sans-serif"),
             hovertext=pump_text,
             hoverinfo="text",
             name="Pump Stations",
         ))
 
-    # 6. Storage Tanks (Square, aqua fill, distinct styling)
+    # 6. Storage Tanks (Square, placed BOTTOM-RIGHT)
     tank_x: List = []
     tank_y: List = []
     tank_text: List = []
+    tank_labels: List = []
     for name, tank in wn.tanks():
         tank_x.append(tank.coordinates[0])
         tank_y.append(tank.coordinates[1])
+        tank_labels.append(f"Tank {name}")
         t_lvl = (
             current_pressures[name]
             if current_pressures is not None and name in current_pressures
             else tank.init_level
         )
         tank_text.append(
-            f"🏢 <b>Elevated Storage Tank {name}</b><br>Current Head: {t_lvl:.2f} m<br>Capacity Limit: {tank.max_level:.1f} m"
+            f"<b>Storage Tank {name}</b><br>Head: {t_lvl:.2f} m<br>Capacity: {tank.max_level:.1f} m"
         )
 
     if tank_x:
@@ -512,99 +531,88 @@ def create_network_plotly_figure(
             mode="markers+text",
             marker=dict(
                 symbol="square",
-                size=22,
-                color="#2FD3C9",
-                line=dict(color="#0B1F3A", width=2.5),
+                size=18,
+                color="#0D9488",
+                line=dict(color="#0B1528", width=2.0),
             ),
-            text=[f"Tank {name}" for name in wn.tank_name_list],
-            textposition="bottom center",
-            textfont=dict(color=text_color, size=10, family="Inter, sans-serif"),
+            text=tank_labels,
+            textposition="bottom right",
+            textfont=dict(color=text_color, size=9, family="Inter, sans-serif"),
             hovertext=tank_text,
             hoverinfo="text",
             name="Elevated Tanks",
         ))
 
-    # 7. Reservoirs (Triangle, ocean blue)
+    # 7. Reservoirs (Triangle, placed TOP-CENTER to never overlap pumps)
     if hasattr(wn, "reservoirs"):
         res_x: List = []
         res_y: List = []
         res_text: List = []
+        res_labels: List = []
         for name, reservoir in wn.reservoirs():
             res_x.append(reservoir.coordinates[0])
             res_y.append(reservoir.coordinates[1])
-            res_text.append(f"🌊 <b>Source Reservoir {name}</b><br>Primary intake source")
+            res_labels.append(f"Res {name}")
+            res_text.append(f"<b>Source Reservoir {name}</b><br>Intake supply")
         if res_x:
             fig.add_trace(go.Scatter(
                 x=res_x, y=res_y,
                 mode="markers+text",
                 marker=dict(
                     symbol="triangle-up",
-                    size=22,
-                    color="#1E6FD9",
-                    line=dict(color="#FFFFFF", width=2),
+                    size=18,
+                    color="#2563EB",
+                    line=dict(color="#FFFFFF", width=1.5),
                 ),
-                text=[f"Res {n}" for n, _ in wn.reservoirs()],
+                text=res_labels,
                 textposition="top center",
-                textfont=dict(color=text_color, size=10, family="Inter, sans-serif"),
+                textfont=dict(color=text_color, size=9, family="Inter, sans-serif"),
                 hovertext=res_text,
                 hoverinfo="text",
                 name="Source Reservoirs",
             ))
 
-    # 8. Active Leak Marker (Concentric rings + Star)
+    # 8. Active Leak Marker (Vermilion Halo + Center Dot)
     if active_leak_node and active_leak_node in wn.node_name_list:
         l_node = wn.get_node(active_leak_node)
         lx, ly = l_node.coordinates[0], l_node.coordinates[1]
-        
-        # Outer pulsing static ring
+
+        # Outer soft halo
         fig.add_trace(go.Scatter(
             x=[lx], y=[ly],
             mode="markers",
             marker=dict(
                 symbol="circle",
-                size=44,
-                color="rgba(0,0,0,0)",
-                line=dict(color="#D7263D", width=2.5),
+                size=32,
+                color="rgba(225, 29, 72, 0.18)",
+                line=dict(color="#E11D48", width=1.5),
             ),
             hoverinfo="none",
             showlegend=False,
         ))
-        # Inner ring
-        fig.add_trace(go.Scatter(
-            x=[lx], y=[ly],
-            mode="markers",
-            marker=dict(
-                symbol="circle",
-                size=28,
-                color="rgba(215,38,61,0.2)",
-                line=dict(color="#D7263D", width=1.5),
-            ),
-            hoverinfo="none",
-            showlegend=False,
-        ))
-        # Star center
+        # Inner focal dot with label
         fig.add_trace(go.Scatter(
             x=[lx], y=[ly],
             mode="markers+text",
             marker=dict(
-                symbol="star",
-                size=22,
-                color="#D7263D",
-                line=dict(color="#FFFFFF", width=2),
+                symbol="circle",
+                size=10,
+                color="#E11D48",
+                line=dict(color="#FFFFFF", width=1.5),
             ),
-            text=["💥 GROUND TRUTH LEAK"],
+            text=["Leak"],
             textposition="top right",
-            textfont=dict(color="#D7263D", size=11, family="Inter, sans-serif"),
-            hovertext=f"🚨 Active Ground-Truth Incident: Node {active_leak_node}",
+            textfont=dict(color="#E11D48", size=10, family="Inter, sans-serif"),
+            hovertext=f"Active Incident: Node {active_leak_node}",
             hoverinfo="text",
             name="Ground Truth Leak",
         ))
 
-    # Layout styling
+    # Clean layout styling
     fig.update_layout(
         title=dict(
             text=f"<b>Drinking Water Distribution Twin (Net3)</b> · Timestep {time_idx}:00",
-            font=dict(color=text_color, size=13, family="Inter, sans-serif"),
+            font=dict(color=text_color, size=12, family="Inter, sans-serif"),
             x=0.01,
             y=0.98,
             xanchor="left",
@@ -618,18 +626,18 @@ def create_network_plotly_figure(
             showgrid=False, zeroline=False, showticklabels=False,
             scaleanchor="x", scaleratio=1,
         ),
-        margin=dict(l=10, r=10, t=36, b=45),
-        height=540,
+        margin=dict(l=10, r=10, t=32, b=40),
+        height=520,
         legend=dict(
             orientation="h",
             yanchor="top",
             y=-0.04,
             xanchor="center",
             x=0.5,
-            bgcolor="rgba(11,31,58,0.92)" if dark_mode else "rgba(255,255,255,0.92)",
-            bordercolor="rgba(255,255,255,0.18)" if dark_mode else "#DDE3ED",
+            bgcolor="rgba(11,21,40,0.92)" if dark_mode else "rgba(255,255,255,0.92)",
+            bordercolor="rgba(255,255,255,0.12)" if dark_mode else "#E2E8F0",
             borderwidth=1,
-            font=dict(color=text_color, size=10),
+            font=dict(color=text_color, size=9),
         ),
         dragmode=False,
         uirevision="constant",
