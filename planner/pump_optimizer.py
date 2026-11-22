@@ -252,7 +252,7 @@ def run_savings_sensitivity_analysis() -> Dict[str, Any]:
         "scenarios": scenarios_evaluated,
         "physical_explanations": {
             "why_summer_savings_zero": "Under Summer High Draw, customer outflow is so high that primary transmission pumps must run near full capacity to prevent tank dry-out. Daytime pump curtailment is impossible without violating pressure constraints, resulting in 0.0 kWh / 0.0 TND savings.",
-            "what_causes_kwh_reduction": "Energy (kWh) reduction stems from hydraulic duty rebalancing between high-head intake Pump 10 (73.8m head, 14h -> 11h ON, saving ~600 kWh) and high-volume lower-head Pump 335 (28.8m head, 8h -> 9h ON, consuming ~290 kWh), net saving 292.1 kWh/day. Delivered customer volume is 100% preserved (62,124.2 m³ in both plans; 0.0% curtailment) while end-of-day reservoir storage increases by +92.4 m³.",
+            "what_causes_kwh_reduction": "Energy (kWh) reduction stems from exact hydraulic duty rebalancing between high-head intake Pump 10 (2,805.29 kWh -> 2,203.18 kWh, saving +602.11 kWh) and lower-head distribution booster Pump 335 (2,478.40 kWh -> 2,788.43 kWh, adding -310.03 kWh), yielding an exact net reduction of 292.08 kWh/day (+602.11 - 310.03 = 292.08 kWh, -5.53% savings). Delivered customer demand volume is 100% preserved at 62,124.2 m³ in both plans (0.0% curtailment), specific energy decreases from 0.0851 to 0.0803 kWh/m³, and end-of-day reservoir storage increases by +92.4 m³.",
             "tariff_model_status": "Hypothetical time-of-use tariff model (assumed hypothesis, to verify with STEG official schedule)."
         }
     }

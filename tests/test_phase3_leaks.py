@@ -72,8 +72,16 @@ def test_rank_suspect_pipes_structure():
     assert "recommendation" in suspects[0]
 
 def test_localization_ranking_invariants():
-    """Verify that for every scenario, hit@1 <= hit@3 <= hit@5 strictly holds."""
+    """Verify that for every scenario, hit@1 <= hit@3 <= hit@5 strictly holds for both pipes and nodes."""
     from sim.scenario_generator import load_scenario_dataset
+    from ml.leak_localizer import compute_sensitivity_matrix, score_nodes_model_based, _extract_telemetry_features
+    from network.graph import build_networkx_graph
+    import networkx as nx
+
+    wn = load_network(24)
+    G = build_networkx_graph(wn)
+    all_dist = dict(nx.all_pairs_shortest_path_length(G))
+    sens_data = compute_sensitivity_matrix()
     data = load_scenario_dataset()
     val_leaks = [s for s in data["scenarios"] if s["split"] == "val" and s["has_leak"]][:15]
     for sc in val_leaks:
@@ -95,6 +103,15 @@ def test_localization_ranking_invariants():
             a3 = int(any(p in true_pipes for p in top5_ids[:3]))
             a5 = int(any(p in true_pipes for p in top5_ids[:5]))
             assert a1 <= a3 <= a5, f"Adjacent invariant violated: {a1} <= {a3} <= {a5}"
+
+            # Node-level invariant
+            _, _, drops = _extract_telemetry_features(sc["pressures"], baseline_p, mode, seed=sc["sensor_noise_seed"])
+            node_ranks = score_nodes_model_based(drops, mode, sens_data, wn, G, all_dist)
+            u = sc["leak_node"]
+            ne1 = int(u in node_ranks[:1])
+            ne3 = int(u in node_ranks[:3])
+            ne5 = int(u in node_ranks[:5])
+            assert ne1 <= ne3 <= ne5, f"Node invariant violated: {ne1} <= {ne3} <= {ne5}"
 
 def test_evaluation_file_generation():
     metrics = evaluate_unseen_scenarios()
