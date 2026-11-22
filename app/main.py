@@ -23,6 +23,7 @@ from planner.pump_optimizer import get_default_baseline_plan, get_cost_optimized
 from planner.resilience import run_resilience_simulation
 from app.assets.plotly_template import register_template
 from app.components import (
+    inject_theme_css,
     render_hero_header,
     render_footer,
     render_honesty_banner,
@@ -51,6 +52,9 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+# Inject full theme stylesheet on every render
+inject_theme_css()
 
 _LOGO_SVG_SIDEBAR = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 76" width="38" height="46" fill="none" style="display:block;margin:0 auto 10px;">
   <defs>

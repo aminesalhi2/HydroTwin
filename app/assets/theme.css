@@ -79,9 +79,9 @@
   --ocean-hover:     #1658B0;
   --aqua:            #2FD3C9;
   --aqua-dark:       #1EBAB0;
-  --sand:            #F4EFE6;
-  --sand-light:      #FAF7F2;
-  --sand-dark:       #E8E0D2;
+  --sand:            #F7F5F0;
+  --sand-light:      #FAF8F3;
+  --sand-dark:       #EDE7DC;
   --vermilion:       #D7263D;
   --vermilion-soft:  rgba(215, 38, 61, 0.08);
   --green:           #2E9E6B;
@@ -159,11 +159,15 @@ body, .stApp {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-latin) !important;
-  color: var(--navy) !important;
+  color: var(--navy);
   font-weight: 600;
   letter-spacing: -0.02em;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+}
+
+.ht-hero h1, .ht-hero h2, .ht-hero h3, .ht-hero div.ht-hero-title {
+  color: #FFFFFF !important;
 }
 
 p, span, label {
@@ -177,15 +181,19 @@ p, span, label {
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  background: linear-gradient(135deg, #0B1F3A 0%, #112B4F 55%, #184275 100%);
-  color: #FFFFFF;
-  padding: 20px 28px;
+  background: linear-gradient(135deg, #0B1F3A 0%, #112B4F 55%, #184275 100%) !important;
+  color: #FFFFFF !important;
+  padding: 22px 28px;
   border-radius: var(--radius-lg);
   margin-bottom: 18px;
   box-shadow: var(--shadow-elevated);
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1.5px solid rgba(47, 211, 201, 0.35) !important;
+}
+
+.ht-hero * {
+  color: #FFFFFF !important;
 }
 
 /* Subtle Wave Background (Seigaiha / Mediterranean Wave Motif) */
@@ -215,7 +223,7 @@ p, span, label {
   display: flex;
   align-items: center;
   justify-content: center;
-  filter: drop-shadow(0 2px 8px rgba(47, 211, 201, 0.25));
+  filter: drop-shadow(0 2px 8px rgba(47, 211, 201, 0.35));
 }
 
 .ht-hero-text {
@@ -223,22 +231,23 @@ p, span, label {
   flex-direction: column;
 }
 
-.ht-hero-title {
-  font-family: var(--font-latin);
-  font-size: 2.05rem;
-  font-weight: 700;
-  color: #FFFFFF;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
-  margin: 0;
+.ht-hero-title, .ht-hero h1, .ht-hero div.ht-hero-title {
+  font-family: var(--font-latin) !important;
+  font-size: 2.15rem !important;
+  font-weight: 800 !important;
+  color: #FFFFFF !important;
+  letter-spacing: -0.03em !important;
+  line-height: 1.15 !important;
+  margin: 0 !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4) !important;
 }
 
 .ht-hero-tagline {
-  font-size: 0.92rem;
-  color: rgba(255, 255, 255, 0.82);
-  margin-top: 4px;
-  font-weight: 400;
-  letter-spacing: -0.01em;
+  font-size: 0.94rem !important;
+  color: rgba(255, 255, 255, 0.90) !important;
+  margin-top: 4px !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.01em !important;
 }
 
 .ht-hero-ribbon {
@@ -251,25 +260,25 @@ p, span, label {
 }
 
 .ht-ribbon-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(47, 211, 201, 0.16);
-  border: 1px solid rgba(47, 211, 201, 0.45);
-  color: #2FD3C9;
-  font-size: 0.82rem;
-  font-weight: 600;
-  padding: 5px 12px;
-  border-radius: 20px;
-  letter-spacing: 0.03em;
-  white-space: nowrap;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  background: rgba(47, 211, 201, 0.18) !important;
+  border: 1.5px solid #2FD3C9 !important;
+  color: #2FD3C9 !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  padding: 5px 12px !important;
+  border-radius: 20px !important;
+  letter-spacing: 0.03em !important;
+  white-space: nowrap !important;
 }
 
 .ht-ribbon-sub {
-  font-size: 0.74rem;
-  color: rgba(255, 255, 255, 0.65);
-  text-align: right;
-  letter-spacing: 0.02em;
+  font-size: 0.74rem !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  text-align: right !important;
+  letter-spacing: 0.02em !important;
 }
 
 /* ── MANDATORY HONESTY BANNER ──────────────────────────────── */
@@ -730,20 +739,46 @@ p, span, label {
   border-left-color: var(--ocean);
 }
 
+/* ── TABS STYLING ──────────────────────────────────────────── */
+.stTabs [data-baseweb="tab-list"] {
+  gap: 8px !important;
+  background-color: transparent !important;
+  border-bottom: 2px solid var(--border) !important;
+  padding-bottom: 2px !important;
+}
+.stTabs [data-baseweb="tab"] {
+  border-radius: 8px 8px 0 0 !important;
+  padding: 8px 16px !important;
+  font-weight: 600 !important;
+  color: var(--text-secondary) !important;
+  background-color: transparent !important;
+  border: none !important;
+}
+.stTabs [data-baseweb="tab"]:hover {
+  color: var(--ocean) !important;
+  background-color: rgba(30, 111, 217, 0.06) !important;
+}
+.stTabs [aria-selected="true"] {
+  color: var(--ocean) !important;
+  border-bottom: 3px solid var(--ocean) !important;
+  font-weight: 700 !important;
+}
+
 /* ── SIDEBAR STYLING ───────────────────────────────────────── */
 [data-testid="stSidebar"] {
   background-color: #0B1F3A !important;
   border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
-[data-testid="stSidebar"] * {
-  color: rgba(255, 255, 255, 0.88) !important;
+[data-testid="stSidebar"] p,
+[data-testid="stSidebar"] span,
+[data-testid="stSidebar"] label {
+  color: rgba(255, 255, 255, 0.90) !important;
 }
 
 [data-testid="stSidebar"] h1,
 [data-testid="stSidebar"] h2,
-[data-testid="stSidebar"] h3,
-[data-testid="stSidebar"] .stMarkdown h3 {
+[data-testid="stSidebar"] h3 {
   color: #FFFFFF !important;
 }
 
@@ -753,12 +788,92 @@ p, span, label {
 }
 
 .ht-sidebar-section {
-  font-size: 0.70rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45) !important;
+  color: #2FD3C9 !important;
   padding: 10px 0 4px;
+}
+
+/* Sidebar Form Controls */
+[data-testid="stSidebar"] div[data-baseweb="select"] > div {
+  background-color: #142844 !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  border-radius: 8px !important;
+  color: #FFFFFF !important;
+}
+[data-testid="stSidebar"] div[data-baseweb="select"] * {
+  color: #FFFFFF !important;
+  background-color: transparent !important;
+}
+
+/* Dropdown popover menu options */
+div[data-baseweb="popover"] ul,
+div[data-baseweb="menu"] {
+  background-color: #142844 !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+}
+div[data-baseweb="popover"] li,
+div[data-baseweb="menu"] li {
+  color: #FFFFFF !important;
+  background-color: #142844 !important;
+}
+div[data-baseweb="popover"] li:hover,
+div[data-baseweb="menu"] li:hover {
+  background-color: #1E6FD9 !important;
+  color: #FFFFFF !important;
+}
+
+/* Segmented Control in Sidebar */
+[data-testid="stSidebar"] [data-testid="stButtonGroup"] {
+  background-color: #142844 !important;
+  border: 1px solid rgba(255, 255, 255, 0.20) !important;
+  border-radius: 8px !important;
+  padding: 3px !important;
+}
+
+[data-testid="stSidebar"] button[data-testid="stBaseButton-segmented_control"] {
+  background-color: transparent !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  border: none !important;
+  font-weight: 600 !important;
+}
+
+[data-testid="stSidebar"] button[data-testid="stBaseButton-segmented_control"]:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: #FFFFFF !important;
+}
+
+[data-testid="stSidebar"] button[data-testid="stBaseButton-segmented_controlActive"] {
+  background-color: #1E6FD9 !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  border: none !important;
+  border-radius: 6px !important;
+}
+
+/* Sidebar Radio Buttons */
+[data-testid="stSidebar"] div[role="radiogroup"] label {
+  color: rgba(255, 255, 255, 0.90) !important;
+}
+
+/* Sidebar Captions */
+[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {
+  color: rgba(255, 255, 255, 0.70) !important;
+}
+
+/* Sidebar Buttons */
+[data-testid="stSidebar"] .stButton > button {
+  background-color: #1E6FD9 !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
+}
+[data-testid="stSidebar"] .stButton > button:hover {
+  background-color: #1658B0 !important;
 }
 
 /* ── FOOTER ────────────────────────────────────────────────── */

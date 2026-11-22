@@ -24,27 +24,18 @@ def _get_css_path() -> str:
 
 
 def inject_theme_css() -> None:
-    """Inject the HydroTwin theme CSS — called once per session via session_state guard."""
-    if st.session_state.get("_ht_theme_injected"):
-        return
+    """Inject the HydroTwin theme CSS on every render so the browser DOM never loses it."""
     css_path = _get_css_path()
     if os.path.exists(css_path):
         with open(css_path, "r", encoding="utf-8") as fh:
             css_content = fh.read()
-        st.markdown(f"<style>\n{css_content}\n</style>", unsafe_allow_html=True)
     else:
-        # Minimal inline fallback if file not found
-        st.markdown(
-            "<style>:root{--navy:#0B1F3A;--ocean:#1E6FD9;--aqua:#2FD3C9;--sand:#F4EFE6;"
+        css_content = (
+            ":root{--navy:#0B1F3A;--ocean:#1E6FD9;--aqua:#2FD3C9;--sand:#F7F5F0;"
             "--vermilion:#D7263D;--green:#2E9E6B;--amber:#E8A020;--white:#FFFFFF;"
-            "--text-primary:#0B1F3A;--text-secondary:#4A6080;--border:#DDE3ED;--card-bg:#FFFFFF;}</style>",
-            unsafe_allow_html=True,
+            "--text-primary:#0B1F3A;--text-secondary:#4A6080;--border:#DDE3ED;--card-bg:#FFFFFF;}"
         )
-    st.session_state["_ht_theme_injected"] = True
-
-
-# Inject on import — guarded by session_state
-inject_theme_css()
+    st.markdown(f"<style>\n{css_content}\n</style>", unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────────────────────
 # Inline SVG assets
@@ -112,21 +103,19 @@ _ICON_RIBBON_WAVE = """<svg viewBox="0 0 16 16" width="14" height="14" fill="non
 def render_hero_header() -> None:
     """Render the full-width hero header with logo, title, tagline, and ribbon."""
     st.markdown(
-        f"""
-        <div class="ht-hero">
-          <div class="ht-hero-left">
-            <div class="ht-hero-logo">{_LOGO_SVG}</div>
-            <div class="ht-hero-text">
-              <h1 class="ht-hero-title">HydroTwin</h1>
-              <div class="ht-hero-tagline">Digital twin &amp; AI for drinking-water networks</div>
-            </div>
-          </div>
-          <div class="ht-hero-ribbon">
-            <span class="ht-ribbon-badge">{_ICON_RIBBON_WAVE} Japan × Tunisia</span>
-            <span class="ht-ribbon-sub">Water + Energy Track · Hackathon 2026</span>
-          </div>
-        </div>
-        """,
+        f"""<div class="ht-hero">
+<div class="ht-hero-left">
+<div class="ht-hero-logo">{_LOGO_SVG}</div>
+<div class="ht-hero-text">
+<div class="ht-hero-title">HydroTwin</div>
+<div class="ht-hero-tagline">Digital twin &amp; AI for drinking-water networks</div>
+</div>
+</div>
+<div class="ht-hero-ribbon">
+<span class="ht-ribbon-badge">{_ICON_RIBBON_WAVE} Japan × Tunisia</span>
+<span class="ht-ribbon-sub">Water + Energy Track · Hackathon 2026</span>
+</div>
+</div>""",
         unsafe_allow_html=True,
     )
 
@@ -251,68 +240,36 @@ def render_impact_cards(
     water_display = f"{water_lost_m3:,.0f}" if water_lost_m3 > 0 else "0"
     water_sub = "Simulated orifice model" if water_lost_m3 > 0 else "Baseline nominal operation"
 
-    st.markdown(
-        f"""
-        <div class="ht-kpi-grid">
-          <!-- Card 1: Water Lost -->
-          <div class="ht-kpi-card kpi-water">
-            <div class="ht-kpi-header">
-              <div class="ht-kpi-icon">{_ICON_DROP}</div>
-              <div class="ht-kpi-label">Water Lost (Sim.)</div>
-            </div>
-            <div class="ht-kpi-value">{water_display} <span class="ht-kpi-unit">m³</span></div>
-            <div class="ht-kpi-sublabel">{water_sub}</div>
-          </div>
-
-          <!-- Card 2: Pumping Savings -->
-          <div class="ht-kpi-card kpi-energy">
-            <div class="ht-kpi-header">
-              <div class="ht-kpi-icon">{_ICON_BOLT}</div>
-              <div class="ht-kpi-label">Pumping Savings</div>
-            </div>
-            <div class="ht-kpi-value-range">0 – 292 – 583 <span class="ht-kpi-unit">kWh/d</span></div>
-            <div class="ht-kpi-sublabel">
-              <span>0.0 – 69.7 – 206.4 TND</span>
-              <span class="ht-chip ht-chip-tariff">Hypothetical Tariff</span>
-            </div>
-          </div>
-
-          <!-- Card 3: Suspect Leaks -->
-          <div class="ht-kpi-card kpi-suspect">
-            <div class="ht-kpi-header">
-              <div class="ht-kpi-icon">{_ICON_PIN}</div>
-              <div class="ht-kpi-label">Suspect Leaks</div>
-            </div>
-            <div class="ht-kpi-value">{suspect_pipes_count} <span class="ht-kpi-unit">pipes</span></div>
-            <div class="ht-kpi-sublabel">Ranked by pressure residuals</div>
-          </div>
-
-          <!-- Card 4: Critical Alerts -->
-          <div class="ht-kpi-card kpi-alert">
-            <div class="ht-kpi-header">
-              <div class="ht-kpi-icon">{_ICON_BELL}</div>
-              <div class="ht-kpi-label">Critical Alerts</div>
-            </div>
-            <div class="ht-kpi-value" style="color:{alert_val_color}">{critical_alerts}</div>
-            <div class="ht-kpi-sublabel {alert_sub_class}">{alert_sub_text}</div>
-          </div>
-
-          <!-- Card 5: Sensor Mode -->
-          <div class="ht-kpi-card kpi-sensor">
-            <div class="ht-kpi-header">
-              <div class="ht-kpi-icon">{_ICON_ANTENNA}</div>
-              <div class="ht-kpi-label">Sensor Telemetry</div>
-            </div>
-            <div class="ht-kpi-value" style="font-size:1.4rem">
-              {mode_name}
-              <span class="ht-chip {mode_class}" style="vertical-align:middle;margin-left:6px">{mode_chip}</span>
-            </div>
-            <div class="ht-kpi-sublabel">Assumed sensor noise &sigma; = {noise_sigma:.2f} m</div>
-          </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
+    cards_html = (
+        f'<div class="ht-kpi-grid">\n'
+        f'<div class="ht-kpi-card kpi-water">\n'
+        f'<div class="ht-kpi-header"><div class="ht-kpi-icon">{_ICON_DROP}</div><div class="ht-kpi-label">Water Lost (Sim.)</div></div>\n'
+        f'<div class="ht-kpi-value">{water_display} <span class="ht-kpi-unit">m³</span></div>\n'
+        f'<div class="ht-kpi-sublabel">{water_sub}</div>\n'
+        f'</div>\n'
+        f'<div class="ht-kpi-card kpi-energy">\n'
+        f'<div class="ht-kpi-header"><div class="ht-kpi-icon">{_ICON_BOLT}</div><div class="ht-kpi-label">Pumping Savings</div></div>\n'
+        f'<div class="ht-kpi-value-range">0 – 292 – 583 <span class="ht-kpi-unit">kWh/d</span></div>\n'
+        f'<div class="ht-kpi-sublabel"><span>0.0 – 69.7 – 206.4 TND</span> <span class="ht-chip ht-chip-tariff">Hypothetical Tariff</span></div>\n'
+        f'</div>\n'
+        f'<div class="ht-kpi-card kpi-suspect">\n'
+        f'<div class="ht-kpi-header"><div class="ht-kpi-icon">{_ICON_PIN}</div><div class="ht-kpi-label">Suspect Leaks</div></div>\n'
+        f'<div class="ht-kpi-value">{suspect_pipes_count} <span class="ht-kpi-unit">pipes</span></div>\n'
+        f'<div class="ht-kpi-sublabel">Ranked by pressure residuals</div>\n'
+        f'</div>\n'
+        f'<div class="ht-kpi-card kpi-alert">\n'
+        f'<div class="ht-kpi-header"><div class="ht-kpi-icon">{_ICON_BELL}</div><div class="ht-kpi-label">Critical Alerts</div></div>\n'
+        f'<div class="ht-kpi-value" style="color:{alert_val_color}">{critical_alerts}</div>\n'
+        f'<div class="ht-kpi-sublabel {alert_sub_class}">{alert_sub_text}</div>\n'
+        f'</div>\n'
+        f'<div class="ht-kpi-card kpi-sensor">\n'
+        f'<div class="ht-kpi-header"><div class="ht-kpi-icon">{_ICON_ANTENNA}</div><div class="ht-kpi-label">Sensor Telemetry</div></div>\n'
+        f'<div class="ht-kpi-value" style="font-size:1.4rem">{mode_name} <span class="ht-chip {mode_class}" style="vertical-align:middle;margin-left:6px">{mode_chip}</span></div>\n'
+        f'<div class="ht-kpi-sublabel">Assumed sensor noise &sigma; = {noise_sigma:.2f} m</div>\n'
+        f'</div>\n'
+        f'</div>'
     )
+    st.markdown(cards_html, unsafe_allow_html=True)
 
 
 def create_network_plotly_figure(
@@ -646,8 +603,12 @@ def create_network_plotly_figure(
     # Layout styling
     fig.update_layout(
         title=dict(
-            text=f"<b>Drinking Water Distribution Twin (Net3)</b> · Simulation Timestep {time_idx}:00",
-            font=dict(color=text_color, size=14, family="Inter, sans-serif"),
+            text=f"<b>Drinking Water Distribution Twin (Net3)</b> · Timestep {time_idx}:00",
+            font=dict(color=text_color, size=13, family="Inter, sans-serif"),
+            x=0.01,
+            y=0.98,
+            xanchor="left",
+            yanchor="top",
         ),
         plot_bgcolor=bg_color,
         paper_bgcolor=bg_color,
@@ -657,14 +618,18 @@ def create_network_plotly_figure(
             showgrid=False, zeroline=False, showticklabels=False,
             scaleanchor="x", scaleratio=1,
         ),
-        margin=dict(l=10, r=10, t=44, b=10),
+        margin=dict(l=10, r=10, t=36, b=45),
         height=540,
         legend=dict(
-            orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
-            bgcolor="rgba(11,31,58,0.85)" if dark_mode else "rgba(255,255,255,0.85)",
-            bordercolor="rgba(255,255,255,0.15)" if dark_mode else "#DDE3ED",
+            orientation="h",
+            yanchor="top",
+            y=-0.04,
+            xanchor="center",
+            x=0.5,
+            bgcolor="rgba(11,31,58,0.92)" if dark_mode else "rgba(255,255,255,0.92)",
+            bordercolor="rgba(255,255,255,0.18)" if dark_mode else "#DDE3ED",
             borderwidth=1,
-            font=dict(color=text_color, size=11),
+            font=dict(color=text_color, size=10),
         ),
         dragmode=False,
         uirevision="constant",
