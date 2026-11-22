@@ -5,6 +5,14 @@ Adheres strictly to honesty, advisory decision principles, reproducibility, and 
 """
 
 import os
+import sys
+from pathlib import Path
+
+# Ensure repository root is always in sys.path regardless of working directory
+_REPO_ROOT = str(Path(__file__).resolve().parent.parent)
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+
 import streamlit as st
 import pandas as pd
 import numpy as np
