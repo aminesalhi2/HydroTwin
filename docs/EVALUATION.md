@@ -229,11 +229,11 @@ Evaluated on the exact same unseen test set (N=220) for learned spatial regressi
 | Strategy | Top-1 Accuracy | Top-3 Accuracy | Top-5 Accuracy | Mean Hop Distance | Evaluation Note |
 |---|---|---|---|---|---|
 | **(i) Sparse from Scratch** | **4.1%** | **9.1%** | **11.4%** | **5.8 hops** | Trained purely on sparse 6-sensor inputs |
-| **(ii) Dense Pretrained + Random Masking** | **0.9%** | **3.2%** | **4.1%** | **6.0 hops** | Pretrained with 40% transducer dropout |
-| **(iii) Dense Pretrained + Fine-Tuned** | **3.2%** | **7.7%** | **12.7%** | **5.8 hops** | Pretrained on 24 sensors, fine-tuned on sparse |
+| **(ii) Dense Pretrained + Random Masking** | **0.9%** | **3.2%** | **4.5%** | **5.9 hops** | Pretrained with 40% transducer dropout |
+| **(iii) Dense Pretrained + Fine-Tuned** | **3.2%** | **7.7%** | **13.2%** | **5.8 hops** | Pretrained on 24 sensors, fine-tuned on sparse |
 
 > **HONEST TRANSFER LEARNING VERDICT**:
-> No demonstrated gain: The 95% confidence intervals overlap between fine-tuning ([7.3%, 18.9%]) and training from scratch ([6.4%, 16.6%]). Pretraining on dense topologies does not produce a statistically significant advantage without local calibration loggers on the uninstrumented branches.
+> No demonstrated gain: The 95% confidence intervals overlap between fine-tuning ([7.7%, 19.3%]) and training from scratch ([6.4%, 16.6%]). Pretraining on dense topologies does not produce a statistically significant advantage without local calibration loggers on the uninstrumented branches.
 
 ---
 

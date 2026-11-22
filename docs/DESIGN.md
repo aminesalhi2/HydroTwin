@@ -86,20 +86,19 @@ The Plotly network figure uses a **dark navy background** (`plot_bgcolor="#0B1F3
 - Tanks: Square marker, aqua fill, navy border
 - Active leak: Star + ring (pulsing ring effect via two traces)
 
-## Rollback Instructions
+## Rollback Instructions to `demo-freeze-4`
+
+To revert the working directory or switch back to the pre-design tag `demo-freeze-4`:
 
 ```bash
-# View all changed files
-git diff --name-only master design
+# Check the diff between current branch and demo-freeze-4
+git diff demo-freeze-4
 
-# Rollback specific file
-git checkout master -- app/components.py
+# Switch back to the clean demo-freeze-4 tag
+git checkout demo-freeze-4
 
-# Full rollback to master
-git checkout master
-
-# View this branch's design files only
-git stash list
+# Or to discard changes on the design branch and reset to demo-freeze-4:
+git reset --hard demo-freeze-4
 ```
 
 > [!CAUTION]

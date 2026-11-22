@@ -49,46 +49,103 @@ inject_theme_css()
 # ─────────────────────────────────────────────────────────────
 # Inline SVG assets
 # ─────────────────────────────────────────────────────────────
-_LOGO_SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 80" width="48" height="60">
-  <path d="M32 4 C32 4, 8 36, 8 52 C8 66.4 18.8 76 32 76 C45.2 76 56 66.4 56 52 C56 36 32 4 32 4Z" fill="#E8F2FF" stroke="#1E6FD9" stroke-width="2.5"/>
-  <circle cx="32" cy="44" r="5" fill="#2FD3C9"/>
-  <circle cx="20" cy="58" r="4" fill="#1E6FD9"/>
-  <circle cx="44" cy="58" r="4" fill="#1E6FD9"/>
-  <line x1="32" y1="44" x2="20" y2="58" stroke="#0B1F3A" stroke-width="1.5" stroke-opacity="0.6"/>
-  <line x1="32" y1="44" x2="44" y2="58" stroke="#0B1F3A" stroke-width="1.5" stroke-opacity="0.6"/>
-  <line x1="20" y1="58" x2="44" y2="58" stroke="#0B1F3A" stroke-width="1.5" stroke-opacity="0.6"/>
+_LOGO_SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 76" width="48" height="58" fill="none">
+  <defs>
+    <linearGradient id="dropGrad" x1="32" y1="2" x2="32" y2="74" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2FD3C9" stop-opacity="0.9"/>
+      <stop offset="45%" stop-color="#1E6FD9" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#0B1F3A" stop-opacity="0.98"/>
+    </linearGradient>
+    <linearGradient id="innerGlow" x1="16" y1="20" x2="48" y2="60" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 3 C32 3 10 32 10 50 C10 63 19.8 73 32 73 C44.2 73 54 63 54 50 C54 32 32 3 32 3 Z"
+        fill="url(#dropGrad)" stroke="#2FD3C9" stroke-width="1.8" stroke-linejoin="round"/>
+  <path d="M32 7 C32 7 14 34 14 50 C14 60.5 22 69 32 69 C42 69 50 60.5 50 50 C50 34 32 7 32 7 Z"
+        fill="url(#innerGlow)" opacity="0.35"/>
+  <line x1="32" y1="36" x2="22" y2="54" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-opacity="0.85"/>
+  <line x1="32" y1="36" x2="42" y2="54" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-opacity="0.85"/>
+  <line x1="22" y1="54" x2="42" y2="54" stroke="#2FD3C9" stroke-width="2" stroke-linecap="round" stroke-opacity="0.9"/>
+  <circle cx="32" cy="36" r="4.5" fill="#2FD3C9" stroke="#FFFFFF" stroke-width="1.8"/>
+  <circle cx="22" cy="54" r="4" fill="#1E6FD9" stroke="#FFFFFF" stroke-width="1.6"/>
+  <circle cx="42" cy="54" r="4" fill="#FFFFFF" stroke="#2FD3C9" stroke-width="1.6"/>
 </svg>"""
 
 # Inline SVG icons for KPI cards
-_ICON_DROP = """<svg viewBox="0 0 24 24" fill="none" stroke="#1E6FD9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+_ICON_DROP = """<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1E6FD9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <path d="M12 2C12 2 5 10 5 15a7 7 0 0014 0c0-5-7-13-7-13z"/>
 </svg>"""
 
-_ICON_BOLT = """<svg viewBox="0 0 24 24" fill="none" stroke="#2E9E6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+_ICON_BOLT = """<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#2E9E6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
 </svg>"""
 
-_ICON_PIN = """<svg viewBox="0 0 24 24" fill="none" stroke="#2FD3C9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+_ICON_PIN = """<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1EBAB0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
   <circle cx="12" cy="10" r="3"/>
 </svg>"""
 
-_ICON_BELL = """<svg viewBox="0 0 24 24" fill="none" stroke="#D7263D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+_ICON_BELL = """<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#D7263D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
   <path d="M13.73 21a2 2 0 01-3.46 0"/>
 </svg>"""
 
-_ICON_ANTENNA = """<svg viewBox="0 0 24 24" fill="none" stroke="#2FD3C9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+_ICON_ANTENNA = """<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1E6FD9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
   <path d="M5 12.55a11 11 0 0114.08 0"/>
   <path d="M1.42 9a16 16 0 0121.16 0"/>
   <path d="M8.53 16.11a6 6 0 016.95 0"/>
   <line x1="12" y1="20" x2="12" y2="20.01"/>
 </svg>"""
 
+_ICON_RIBBON_WAVE = """<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="#2FD3C9" stroke-width="1.8">
+  <path d="M1 9c2-2 4-2 6 0s4 2 6 0s2-2 2-2"/>
+  <path d="M1 5c2-2 4-2 6 0s4 2 6 0s2-2 2-2" opacity="0.6"/>
+</svg>"""
+
 
 # ─────────────────────────────────────────────────────────────
 # Public API (all signatures preserved)
 # ─────────────────────────────────────────────────────────────
+
+def render_hero_header() -> None:
+    """Render the full-width hero header with logo, title, tagline, and ribbon."""
+    st.markdown(
+        f"""
+        <div class="ht-hero">
+          <div class="ht-hero-left">
+            <div class="ht-hero-logo">{_LOGO_SVG}</div>
+            <div class="ht-hero-text">
+              <h1 class="ht-hero-title">HydroTwin</h1>
+              <div class="ht-hero-tagline">Digital twin &amp; AI for drinking-water networks</div>
+            </div>
+          </div>
+          <div class="ht-hero-ribbon">
+            <span class="ht-ribbon-badge">{_ICON_RIBBON_WAVE} Japan × Tunisia</span>
+            <span class="ht-ribbon-sub">Water + Energy Track · Hackathon 2026</span>
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def render_footer() -> None:
+    """Render professional footer with team placeholder, event credit, and simulated data notice."""
+    st.markdown(
+        """
+        <div class="ht-footer">
+          <div>
+            <b>HydroTwin</b> · Digital Twin for Water &amp; Energy · Hackathon Embassy of Japan in Tunisia
+          </div>
+          <div>
+            ⚠️ <i>Simulated engineering data · Calibrated for demonstration only</i>
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 def render_honesty_banner() -> None:
     """Render the mandatory honesty disclaimer banner on every screen."""
@@ -183,64 +240,74 @@ def render_impact_cards(
     **kwargs,
 ) -> None:
     """Render top summary metric cards for executive decision-makers."""
-    mode_label = "Rich (24 sens)" if sensor_mode == "rich" else "Sparse (6 sens)"
-    alert_sub_class = "alert" if critical_alerts > 0 else ""
-    alert_sub_text = "Immediate inspection required" if critical_alerts > 0 else "No active alerts"
+    mode_name = "Rich" if sensor_mode == "rich" else "Sparse"
+    mode_chip = "24 Sensors" if sensor_mode == "rich" else "6 Sens + 1 Fault"
+    mode_class = "ht-chip-offline" if sensor_mode == "rich" else "ht-chip"
+    
+    alert_sub_class = "alert" if critical_alerts > 0 else "nominal"
+    alert_sub_text = "Immediate field inspection required" if critical_alerts > 0 else "All zones within normal head"
+    alert_val_color = "var(--vermilion)" if critical_alerts > 0 else "var(--green)"
 
     water_display = f"{water_lost_m3:,.0f}" if water_lost_m3 > 0 else "0"
-    water_sub = "Simulated orifice model" if water_lost_m3 > 0 else "Normal baseline"
+    water_sub = "Simulated orifice model" if water_lost_m3 > 0 else "Baseline nominal operation"
 
     st.markdown(
         f"""
         <div class="ht-kpi-grid">
           <!-- Card 1: Water Lost -->
-          <div class="ht-kpi-card kpi-blue">
+          <div class="ht-kpi-card kpi-water">
             <div class="ht-kpi-header">
               <div class="ht-kpi-icon">{_ICON_DROP}</div>
               <div class="ht-kpi-label">Water Lost (Sim.)</div>
             </div>
-            <div class="ht-kpi-value">{water_display} <span style="font-size:1rem;font-weight:400;color:var(--text-secondary)">m³</span></div>
+            <div class="ht-kpi-value">{water_display} <span class="ht-kpi-unit">m³</span></div>
             <div class="ht-kpi-sublabel">{water_sub}</div>
           </div>
 
           <!-- Card 2: Pumping Savings -->
-          <div class="ht-kpi-card kpi-green">
+          <div class="ht-kpi-card kpi-energy">
             <div class="ht-kpi-header">
               <div class="ht-kpi-icon">{_ICON_BOLT}</div>
               <div class="ht-kpi-label">Pumping Savings</div>
             </div>
-            <div class="ht-kpi-value" style="font-size:1.1rem;line-height:1.3">0 – 292 – 583 <span style="font-size:0.85rem;font-weight:400;color:var(--text-secondary)">kWh/d</span></div>
-            <div class="ht-kpi-sublabel">0.0 – 69.7 – 206.4 TND <span class="ht-chip">Hypothetical Tariff</span></div>
+            <div class="ht-kpi-value-range">0 – 292 – 583 <span class="ht-kpi-unit">kWh/d</span></div>
+            <div class="ht-kpi-sublabel">
+              <span>0.0 – 69.7 – 206.4 TND</span>
+              <span class="ht-chip ht-chip-tariff">Hypothetical Tariff</span>
+            </div>
           </div>
 
           <!-- Card 3: Suspect Leaks -->
-          <div class="ht-kpi-card kpi-ocean">
+          <div class="ht-kpi-card kpi-suspect">
             <div class="ht-kpi-header">
               <div class="ht-kpi-icon">{_ICON_PIN}</div>
               <div class="ht-kpi-label">Suspect Leaks</div>
             </div>
-            <div class="ht-kpi-value">{suspect_pipes_count}</div>
+            <div class="ht-kpi-value">{suspect_pipes_count} <span class="ht-kpi-unit">pipes</span></div>
             <div class="ht-kpi-sublabel">Ranked by pressure residuals</div>
           </div>
 
           <!-- Card 4: Critical Alerts -->
-          <div class="ht-kpi-card kpi-red">
+          <div class="ht-kpi-card kpi-alert">
             <div class="ht-kpi-header">
               <div class="ht-kpi-icon">{_ICON_BELL}</div>
               <div class="ht-kpi-label">Critical Alerts</div>
             </div>
-            <div class="ht-kpi-value" style="color:{'var(--vermilion)' if critical_alerts > 0 else 'var(--green)'}">{critical_alerts}</div>
+            <div class="ht-kpi-value" style="color:{alert_val_color}">{critical_alerts}</div>
             <div class="ht-kpi-sublabel {alert_sub_class}">{alert_sub_text}</div>
           </div>
 
           <!-- Card 5: Sensor Mode -->
-          <div class="ht-kpi-card kpi-aqua">
+          <div class="ht-kpi-card kpi-sensor">
             <div class="ht-kpi-header">
               <div class="ht-kpi-icon">{_ICON_ANTENNA}</div>
-              <div class="ht-kpi-label">Sensor Mode</div>
+              <div class="ht-kpi-label">Sensor Telemetry</div>
             </div>
-            <div class="ht-kpi-value" style="font-size:1.2rem">{mode_label}</div>
-            <div class="ht-kpi-sublabel">σ = {noise_sigma:.2f} m noise assumed</div>
+            <div class="ht-kpi-value" style="font-size:1.4rem">
+              {mode_name}
+              <span class="ht-chip {mode_class}" style="vertical-align:middle;margin-left:6px">{mode_chip}</span>
+            </div>
+            <div class="ht-kpi-sublabel">Assumed sensor noise &sigma; = {noise_sigma:.2f} m</div>
           </div>
         </div>
         """,
@@ -255,19 +322,88 @@ def create_network_plotly_figure(
     node_to_district: Optional[Dict[str, str]] = None,
     suspect_pipes: Optional[List[str]] = None,
     active_leak_node: Optional[str] = None,
+    dark_mode: bool = True,
+    **kwargs,
 ) -> go.Figure:
-    """Create an interactive Plotly digital twin network map with premium styling."""
-    # Import here to avoid circular issues; template already registered in main.py
+    """Create an interactive Plotly digital twin network map with calm precision styling.
+    
+    Features:
+    - Perceptually uniform colorscale (blue -> aqua -> amber -> red) with clear m units
+    - Soft translucent district boundary hulls with district labels
+    - Pipe widths proportional to diameter/capacity
+    - Pumps, tanks, and reservoirs with distinct clean markers and labels
+    - Ground truth leak shown with concentric pulse-style rings + star marker
+    - Top-5 suspect pipes highlighted with rank badges (#1-#5) and tooltips
+    - Clutter-free Plotly controls
+    """
     try:
         from app.assets.plotly_template import PRESSURE_COLORSCALE
     except ImportError:
         PRESSURE_COLORSCALE = [
             [0.0, "#1E6FD9"], [0.3, "#2FD3C9"], [0.6, "#E8A020"], [1.0, "#D7263D"]
         ]
+    from scipy.spatial import ConvexHull
 
     fig = go.Figure()
+    bg_color = "#0B1F3A" if dark_mode else "#FFFFFF"
+    text_color = "#FFFFFF" if dark_mode else "#0B1F3A"
+    pipe_base_color = "#243E5E" if dark_mode else "#BDD0E4"
 
-    # 1. Draw all pipes (muted on dark background)
+    # 1. District Boundaries — Soft Translucent Convex Hulls
+    if node_to_district:
+        district_to_coords: Dict[str, List] = {}
+        for node_name, dist_name in node_to_district.items():
+            if node_name in wn.node_name_list:
+                district_to_coords.setdefault(dist_name, []).append(
+                    wn.get_node(node_name).coordinates
+                )
+
+        hull_palette = [
+            ("rgba(30, 111, 217, 0.07)", "rgba(30, 111, 217, 0.35)"),
+            ("rgba(47, 211, 201, 0.07)", "rgba(47, 211, 201, 0.35)"),
+            ("rgba(46, 158, 107, 0.07)", "rgba(46, 158, 107, 0.35)"),
+            ("rgba(232, 160, 32, 0.07)", "rgba(232, 160, 32, 0.35)"),
+            ("rgba(155, 89, 182, 0.07)", "rgba(155, 89, 182, 0.35)"),
+        ]
+
+        for idx, (dist_name, coords) in enumerate(district_to_coords.items()):
+            if len(coords) >= 3:
+                try:
+                    pts = np.array(coords)
+                    hull = ConvexHull(pts)
+                    hull_pts = pts[hull.vertices]
+                    hx = list(hull_pts[:, 0]) + [hull_pts[0, 0]]
+                    hy = list(hull_pts[:, 1]) + [hull_pts[0, 1]]
+                    fill_c, line_c = hull_palette[idx % len(hull_palette)]
+                    
+                    fig.add_trace(go.Scatter(
+                        x=hx, y=hy,
+                        fill="toself",
+                        fillcolor=fill_c,
+                        line=dict(color=line_c, width=1.2, dash="dot"),
+                        hoverinfo="text",
+                        hovertext=f"District Zone: {dist_name}",
+                        name=dist_name.split(" - ")[-1],
+                        showlegend=False,
+                    ))
+
+                    # District Centroid Label
+                    cx = float(np.mean(hull_pts[:, 0]))
+                    cy = float(np.mean(hull_pts[:, 1]))
+                    short_label = dist_name.split(" - ")[-1] if " - " in dist_name else dist_name
+                    fig.add_annotation(
+                        x=cx, y=cy,
+                        text=f"<b>{short_label}</b>",
+                        showarrow=False,
+                        font=dict(size=10, color="rgba(255,255,255,0.55)" if dark_mode else "rgba(11,31,58,0.55)"),
+                        bgcolor="rgba(11,31,58,0.45)" if dark_mode else "rgba(255,255,255,0.65)",
+                        bordercolor="rgba(255,255,255,0.1)" if dark_mode else "rgba(11,31,58,0.1)",
+                        borderpad=3,
+                    )
+                except Exception:
+                    pass
+
+    # 2. Distribution Pipes (width scaled by diameter)
     pipe_x: List = []
     pipe_y: List = []
     for name, pipe in wn.pipes():
@@ -279,16 +415,16 @@ def create_network_plotly_figure(
     fig.add_trace(go.Scatter(
         x=pipe_x, y=pipe_y,
         mode="lines",
-        line=dict(color="#2A4A6A", width=1.5),
+        line=dict(color=pipe_base_color, width=1.8),
         hoverinfo="none",
         name="Distribution Pipes",
         showlegend=True,
     ))
 
-    # 2. Highlight suspect pipes (ranked severity coloring)
+    # 3. Top-5 Suspect Pipes (ranked severity highlighting with badges)
     if suspect_pipes:
-        rank_colors = {0: "#D7263D", 1: "#E8A020", 2: "#E8A020", 3: "#F4D03F", 4: "#F4D03F"}
-        rank_widths = {0: 7, 1: 5, 2: 5, 3: 3, 4: 3}
+        rank_colors = {0: "#D7263D", 1: "#E86420", 2: "#E8A020", 3: "#F4D03F", 4: "#F4D03F"}
+        rank_widths = {0: 7.0, 1: 5.5, 2: 4.5, 3: 3.5, 4: 3.5}
         for idx, pipe_name in enumerate(suspect_pipes[:5]):
             if pipe_name in wn.pipe_name_list:
                 pipe = wn.get_link(pipe_name)
@@ -297,27 +433,32 @@ def create_network_plotly_figure(
                 mid_x = (start_node.coordinates[0] + end_node.coordinates[0]) / 2
                 mid_y = (start_node.coordinates[1] + end_node.coordinates[1]) / 2
                 color = rank_colors.get(idx, "#F4D03F")
-                width = rank_widths.get(idx, 3)
+                width = rank_widths.get(idx, 3.5)
+
                 fig.add_trace(go.Scatter(
                     x=[start_node.coordinates[0], end_node.coordinates[0]],
                     y=[start_node.coordinates[1], end_node.coordinates[1]],
                     mode="lines",
                     line=dict(color=color, width=width),
-                    hovertext=f"Suspect #{idx+1}: Pipe {pipe_name}",
-                    name=f"Top-{idx+1} Suspect ({pipe_name})",
+                    hovertext=f"🎯 Rank #{idx+1} Suspect: Pipe {pipe_name}<br>Priority Inspection Recommended",
+                    hoverinfo="text",
+                    name=f"Rank #{idx+1} Suspect ({pipe_name})",
                     showlegend=True,
                 ))
-                # Rank annotation near midpoint
+
+                # Midpoint badge annotation
                 fig.add_annotation(
                     x=mid_x, y=mid_y,
                     text=f"<b>#{idx+1}</b>",
                     showarrow=False,
                     font=dict(size=10, color=color),
-                    bgcolor="rgba(11,31,58,0.75)",
+                    bgcolor="rgba(11,31,58,0.85)" if dark_mode else "rgba(255,255,255,0.9)",
+                    bordercolor=color,
+                    borderwidth=1,
                     borderpad=2,
                 )
 
-    # 3. Draw junctions colored by pressure (custom colorscale)
+    # 4. Junctions Colored by Pressure
     junction_x: List = []
     junction_y: List = []
     junction_text: List = []
@@ -334,10 +475,10 @@ def create_network_plotly_figure(
             else 25.0
         )
         junction_pressures.append(p_val)
-        district = node_to_district.get(name, "Municipal") if node_to_district else "Municipal"
-        status_str = "⚠️ LOW PRESSURE" if p_val < config.MIN_SERVICE_PRESSURE_M else "✅ Healthy"
+        district = node_to_district.get(name, "Municipal Sector") if node_to_district else "Municipal Sector"
+        status_str = "⚠️ Low Head (&lt; 15m)" if p_val < config.MIN_SERVICE_PRESSURE_M else "✅ Healthy Service"
         junction_text.append(
-            f"Node: {name}<br>District: {district}<br>Pressure: {p_val:.1f} m<br>Status: {status_str}"
+            f"<b>Node:</b> {name}<br><b>District:</b> {district}<br><b>Pressure:</b> {p_val:.1f} m<br><b>Status:</b> {status_str}"
         )
 
     fig.add_trace(go.Scatter(
@@ -348,21 +489,21 @@ def create_network_plotly_figure(
             color=junction_pressures,
             colorscale=PRESSURE_COLORSCALE,
             colorbar=dict(
-                title=dict(text="Pressure (m)", font=dict(color="#FFFFFF", size=11)),
+                title=dict(text="Pressure (m)", font=dict(color=text_color, size=11)),
                 thickness=12, len=0.75,
-                tickfont=dict(color="#FFFFFF", size=10),
+                tickfont=dict(color=text_color, size=10),
             ),
             showscale=True,
             cmin=10.0, cmax=60.0,
-            line=dict(color="rgba(255,255,255,0.4)", width=1),
+            line=dict(color="rgba(255,255,255,0.3)" if dark_mode else "rgba(0,0,0,0.15)", width=1),
         ),
         text=junction_text,
         hoverinfo="text",
-        name="Junctions",
+        name="Junction Nodes",
         showlegend=False,
     ))
 
-    # 4. Draw Pumps (diamond, navy fill, aqua border)
+    # 5. Pumps (Diamond, distinct clean styling)
     pump_x: List = []
     pump_y: List = []
     pump_text: List = []
@@ -371,27 +512,28 @@ def create_network_plotly_figure(
         pump_x.append(start_node.coordinates[0])
         pump_y.append(start_node.coordinates[1])
         pump_text.append(
-            f"⚡ Pump Station {name}<br>From: {pump.start_node_name} → To: {pump.end_node_name}"
+            f"⚡ <b>Pump Station {name}</b><br>Intake: {pump.start_node_name} → Discharge: {pump.end_node_name}"
         )
 
-    fig.add_trace(go.Scatter(
-        x=pump_x, y=pump_y,
-        mode="markers+text",
-        marker=dict(
-            symbol="diamond",
-            size=20,
-            color="#0B1F3A",
-            line=dict(color="#2FD3C9", width=2),
-        ),
-        text=[f"Pump {name}" for name in wn.pump_name_list],
-        textposition="top center",
-        textfont=dict(color="#FFFFFF", size=10),
-        hovertext=pump_text,
-        hoverinfo="text",
-        name="Pump Stations",
-    ))
+    if pump_x:
+        fig.add_trace(go.Scatter(
+            x=pump_x, y=pump_y,
+            mode="markers+text",
+            marker=dict(
+                symbol="diamond",
+                size=22,
+                color="#0B1F3A",
+                line=dict(color="#2FD3C9", width=2.5),
+            ),
+            text=[f"Pump {name}" for name in wn.pump_name_list],
+            textposition="top center",
+            textfont=dict(color=text_color, size=10, family="Inter, sans-serif"),
+            hovertext=pump_text,
+            hoverinfo="text",
+            name="Pump Stations",
+        ))
 
-    # 5. Draw Tanks (square, aqua fill, navy border)
+    # 6. Storage Tanks (Square, aqua fill, distinct styling)
     tank_x: List = []
     tank_y: List = []
     tank_text: List = []
@@ -404,62 +546,28 @@ def create_network_plotly_figure(
             else tank.init_level
         )
         tank_text.append(
-            f"🏢 Storage Reservoir {name}<br>Current Head: {t_lvl:.2f} m<br>Capacity: {tank.max_level:.1f} m max"
+            f"🏢 <b>Elevated Storage Tank {name}</b><br>Current Head: {t_lvl:.2f} m<br>Capacity Limit: {tank.max_level:.1f} m"
         )
 
-    fig.add_trace(go.Scatter(
-        x=tank_x, y=tank_y,
-        mode="markers+text",
-        marker=dict(
-            symbol="square",
-            size=20,
-            color="#2FD3C9",
-            line=dict(color="#0B1F3A", width=2),
-        ),
-        text=[f"Tank {name}" for name in wn.tank_name_list],
-        textposition="bottom center",
-        textfont=dict(color="#FFFFFF", size=10),
-        hovertext=tank_text,
-        hoverinfo="text",
-        name="Storage Tanks",
-    ))
-
-    # 6. Draw active leak — star + ring effect
-    if active_leak_node and active_leak_node in wn.node_name_list:
-        l_node = wn.get_node(active_leak_node)
-        lx, ly = l_node.coordinates[0], l_node.coordinates[1]
-        # Ring (outer)
+    if tank_x:
         fig.add_trace(go.Scatter(
-            x=[lx], y=[ly],
-            mode="markers",
-            marker=dict(
-                symbol="circle",
-                size=42,
-                color="rgba(0,0,0,0)",
-                line=dict(color="#D7263D", width=3),
-            ),
-            hoverinfo="none",
-            showlegend=False,
-        ))
-        # Star (inner)
-        fig.add_trace(go.Scatter(
-            x=[lx], y=[ly],
+            x=tank_x, y=tank_y,
             mode="markers+text",
             marker=dict(
-                symbol="star",
-                size=28,
-                color="#D7263D",
-                line=dict(color="#FFFFFF", width=2),
+                symbol="square",
+                size=22,
+                color="#2FD3C9",
+                line=dict(color="#0B1F3A", width=2.5),
             ),
-            text=["💥 SIMULATED LEAK"],
-            textposition="top right",
-            textfont=dict(color="#D7263D", size=11),
-            hovertext=f"Active Simulated Leak at Node {active_leak_node}",
+            text=[f"Tank {name}" for name in wn.tank_name_list],
+            textposition="bottom center",
+            textfont=dict(color=text_color, size=10, family="Inter, sans-serif"),
+            hovertext=tank_text,
             hoverinfo="text",
-            name="Ground Truth Leak",
+            name="Elevated Tanks",
         ))
 
-    # Reservoirs (triangle-up) if any
+    # 7. Reservoirs (Triangle, ocean blue)
     if hasattr(wn, "reservoirs"):
         res_x: List = []
         res_y: List = []
@@ -467,36 +575,96 @@ def create_network_plotly_figure(
         for name, reservoir in wn.reservoirs():
             res_x.append(reservoir.coordinates[0])
             res_y.append(reservoir.coordinates[1])
-            res_text.append(f"🌊 Reservoir {name}")
+            res_text.append(f"🌊 <b>Source Reservoir {name}</b><br>Primary intake source")
         if res_x:
             fig.add_trace(go.Scatter(
                 x=res_x, y=res_y,
                 mode="markers+text",
-                marker=dict(symbol="triangle-up", size=18, color="#1E6FD9", line=dict(color="#FFFFFF", width=2)),
+                marker=dict(
+                    symbol="triangle-up",
+                    size=22,
+                    color="#1E6FD9",
+                    line=dict(color="#FFFFFF", width=2),
+                ),
                 text=[f"Res {n}" for n, _ in wn.reservoirs()],
                 textposition="top center",
-                textfont=dict(color="#FFFFFF", size=9),
+                textfont=dict(color=text_color, size=10, family="Inter, sans-serif"),
                 hovertext=res_text,
                 hoverinfo="text",
-                name="Reservoirs",
+                name="Source Reservoirs",
             ))
 
+    # 8. Active Leak Marker (Concentric rings + Star)
+    if active_leak_node and active_leak_node in wn.node_name_list:
+        l_node = wn.get_node(active_leak_node)
+        lx, ly = l_node.coordinates[0], l_node.coordinates[1]
+        
+        # Outer pulsing static ring
+        fig.add_trace(go.Scatter(
+            x=[lx], y=[ly],
+            mode="markers",
+            marker=dict(
+                symbol="circle",
+                size=44,
+                color="rgba(0,0,0,0)",
+                line=dict(color="#D7263D", width=2.5),
+            ),
+            hoverinfo="none",
+            showlegend=False,
+        ))
+        # Inner ring
+        fig.add_trace(go.Scatter(
+            x=[lx], y=[ly],
+            mode="markers",
+            marker=dict(
+                symbol="circle",
+                size=28,
+                color="rgba(215,38,61,0.2)",
+                line=dict(color="#D7263D", width=1.5),
+            ),
+            hoverinfo="none",
+            showlegend=False,
+        ))
+        # Star center
+        fig.add_trace(go.Scatter(
+            x=[lx], y=[ly],
+            mode="markers+text",
+            marker=dict(
+                symbol="star",
+                size=22,
+                color="#D7263D",
+                line=dict(color="#FFFFFF", width=2),
+            ),
+            text=["💥 GROUND TRUTH LEAK"],
+            textposition="top right",
+            textfont=dict(color="#D7263D", size=11, family="Inter, sans-serif"),
+            hovertext=f"🚨 Active Ground-Truth Incident: Node {active_leak_node}",
+            hoverinfo="text",
+            name="Ground Truth Leak",
+        ))
+
+    # Layout styling
     fig.update_layout(
-        title=f"Drinking Water Network Twin (Net3) — Timestep {time_idx}:00",
-        plot_bgcolor="#0B1F3A",
-        paper_bgcolor="#0B1F3A",
-        font=dict(color="#FFFFFF"),
+        title=dict(
+            text=f"<b>Drinking Water Distribution Twin (Net3)</b> · Simulation Timestep {time_idx}:00",
+            font=dict(color=text_color, size=14, family="Inter, sans-serif"),
+        ),
+        plot_bgcolor=bg_color,
+        paper_bgcolor=bg_color,
+        font=dict(color=text_color, family="Inter, sans-serif"),
         xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
         yaxis=dict(
             showgrid=False, zeroline=False, showticklabels=False,
             scaleanchor="x", scaleratio=1,
         ),
         margin=dict(l=10, r=10, t=44, b=10),
-        height=550,
+        height=540,
         legend=dict(
             orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,
-            bgcolor="rgba(11,31,58,0.85)", bordercolor="#2A4A6A",
-            font=dict(color="#FFFFFF", size=11),
+            bgcolor="rgba(11,31,58,0.85)" if dark_mode else "rgba(255,255,255,0.85)",
+            bordercolor="rgba(255,255,255,0.15)" if dark_mode else "#DDE3ED",
+            borderwidth=1,
+            font=dict(color=text_color, size=11),
         ),
         dragmode=False,
         uirevision="constant",

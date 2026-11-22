@@ -32,32 +32,81 @@ def get_language_container_css(lang: str) -> str:
     if lang == "ar":
         return """
         <style>
+            .stApp, .block-container, [data-testid="stAppViewContainer"] > .main {
+                direction: rtl !important;
+                text-align: right !important;
+                font-family: 'Noto Sans Arabic', 'Arabic Typesetting', 'Segoe UI', Tahoma, sans-serif !important;
+            }
+            .ht-hero {
+                flex-direction: row-reverse !important;
+            }
+            .ht-hero-left {
+                flex-direction: row-reverse !important;
+            }
+            .ht-hero-ribbon {
+                align-items: flex-start !important;
+            }
+            .ht-hero-ribbon .ht-ribbon-sub {
+                text-align: left !important;
+            }
+            .ht-banner {
+                border-left: 1px solid rgba(215, 38, 61, 0.25) !important;
+                border-right: 5px solid var(--vermilion, #D7263D) !important;
+                text-align: right !important;
+            }
+            .ht-advisory {
+                border-left: 1px solid rgba(30, 111, 217, 0.22) !important;
+                border-right: 4px solid var(--ocean, #1E6FD9) !important;
+                text-align: right !important;
+            }
+            .ht-limitations {
+                border-left: 1px solid var(--border, #DDE3ED) !important;
+                border-right: 4px solid var(--text-muted, #7B8FA6) !important;
+                text-align: right !important;
+            }
+            .ht-limitations ul {
+                padding-left: 0 !important;
+                padding-right: 18px !important;
+            }
+            .ht-kpi-card {
+                text-align: right !important;
+            }
+            .ht-kpi-header {
+                flex-direction: row-reverse !important;
+            }
             .multilingual-card {
-                direction: rtl;
-                text-align: right;
-                font-family: 'Noto Sans Arabic', 'Segoe UI', Tahoma, Arial, sans-serif;
-                background-color: var(--white, #FFFFFF);
+                direction: rtl !important;
+                text-align: right !important;
+                font-family: 'Noto Sans Arabic', 'Arabic Typesetting', 'Segoe UI', Tahoma, sans-serif !important;
+                background-color: var(--card-bg, #FFFFFF);
                 border: 1px solid var(--border, #DDE3ED);
-                border-right: 6px solid var(--amber, #E8A020);
-                border-left: 1px solid var(--border, #DDE3ED);
+                border-right: 5px solid var(--green, #2E9E6B) !important;
+                border-left: 1px solid var(--border, #DDE3ED) !important;
                 border-radius: 8px;
                 padding: 16px 20px;
                 margin-top: 10px;
                 color: var(--text-primary, #0B1F3A);
                 line-height: 1.7;
             }
+            .ht-stepper {
+                flex-direction: row-reverse !important;
+            }
         </style>
         """
     elif lang == "ja":
         return """
         <style>
+            .stApp, .block-container, [data-testid="stAppViewContainer"] > .main {
+                font-family: 'Noto Sans JP', 'Yu Gothic', 'Meiryo', sans-serif !important;
+                line-height: 1.75;
+            }
             .multilingual-card {
                 direction: ltr;
                 text-align: left;
-                font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Meiryo', 'Yu Gothic', sans-serif;
-                background-color: var(--white, #FFFFFF);
+                font-family: 'Noto Sans JP', 'Yu Gothic', 'Meiryo', sans-serif !important;
+                background-color: var(--card-bg, #FFFFFF);
                 border: 1px solid var(--border, #DDE3ED);
-                border-left: 6px solid var(--ocean, #1E6FD9);
+                border-left: 5px solid var(--ocean, #1E6FD9);
                 border-radius: 8px;
                 padding: 16px 20px;
                 margin-top: 10px;
@@ -73,9 +122,9 @@ def get_language_container_css(lang: str) -> str:
                 direction: ltr;
                 text-align: left;
                 font-family: 'Inter', system-ui, -apple-system, sans-serif;
-                background-color: var(--white, #FFFFFF);
+                background-color: var(--card-bg, #FFFFFF);
                 border: 1px solid var(--border, #DDE3ED);
-                border-left: 6px solid var(--green, #2E9E6B);
+                border-left: 5px solid var(--green, #2E9E6B);
                 border-radius: 8px;
                 padding: 16px 20px;
                 margin-top: 10px;
@@ -188,6 +237,13 @@ def generate_work_order(
     top_pipe_id = suspect_pipes[0]["pipe_id"] if suspect_pipes else "N/A"
     priority_str = priority_map.get(severity, priority_map["moderate"])[lang]
     
+    # Severity badge styling: minor=amber, moderate=orange, critical=vermilion
+    sev_badge_class = (
+        "severity-critical" if severity == "critical"
+        else "severity-moderate" if severity == "moderate"
+        else "severity-minor"
+    )
+    
     suspect_lines = []
     if suspect_pipes:
         for s in suspect_pipes[:5]:
@@ -203,29 +259,36 @@ def generate_work_order(
     action_text = t["action_leak"].format(pipe_id=top_pipe_id)
     
     body = f"""
-    <div class="multilingual-card">
-        <h4 style="margin-top: 0; color: #c0392b;">{t['title_leak']}</h4>
-        <div style="margin-bottom: 8px;">
-            <b>{t['severity_label']}:</b> <span style="color: #d35400; font-weight: bold;">{severity.upper()}</span> | 
-            <b>{t['priority_label']}:</b> {priority_str} | 
-            <b>{t['district_label']}:</b> {district}
+    <div class="multilingual-card ht-work-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <h4 style="margin: 0; color: #D7263D; display:flex; align-items:center; gap:6px;">
+                {t['title_leak']}
+            </h4>
+            <div>
+                <span class="severity-badge {sev_badge_class}">{severity.upper()}</span>
+                <span class="ht-chip" style="margin-left:6px; font-weight:700;">{lang.upper()}</span>
+            </div>
         </div>
-        <div style="margin-bottom: 8px;">
-            <b>{t['water_loss_label']}:</b> ~{water_loss_m3h:.1f} m³/h
+        <div style="margin-bottom: 8px; font-size: 0.88rem;">
+            <b>{t['district_label']}:</b> <span class="ht-chip" style="font-weight:600;">{district}</span> &nbsp;|&nbsp; 
+            <b>{t['priority_label']}:</b> <span style="font-weight:600;">{priority_str}</span>
         </div>
-        <div style="margin-top: 10px; margin-bottom: 6px; font-weight: bold;">
+        <div style="margin-bottom: 8px; font-size: 0.88rem;">
+            <b>{t['water_loss_label']}:</b> <span style="font-weight:700; color:#D7263D;">~{water_loss_m3h:.1f} m³/h</span>
+        </div>
+        <div style="margin-top: 10px; margin-bottom: 6px; font-weight: 700; font-size: 0.88rem; color: var(--navy, #0B1F3A);">
             {t['suspects_header']}
         </div>
-        <div style="margin-bottom: 12px; font-size: 0.9rem; line-height: 1.6;">
+        <div style="margin-bottom: 12px; font-size: 0.86rem; line-height: 1.6; color: #4A6080;">
             {suspects_formatted}
         </div>
-        <div style="margin-top: 10px; font-weight: bold;">
+        <div style="margin-top: 10px; font-weight: 700; font-size: 0.88rem; color: var(--navy, #0B1F3A);">
             {t['action_header']}
         </div>
-        <div style="font-size: 0.9rem; margin-top: 4px;">
-            {action_text}
+        <div style="font-size: 0.88rem; margin-top: 4px; padding: 8px 12px; background: #F8FAFD; border-radius: 6px; border-left: 3px solid #1E6FD9; font-weight: 500;">
+            👉 {action_text}
         </div>
-        <div style="font-size: 0.8rem; color: #7f8c8d; margin-top: 14px; border-top: 1px dashed #dcdfe6; padding-top: 6px;">
+        <div style="font-size: 0.76rem; color: #7B8FA6; margin-top: 14px; border-top: 1px dashed #DDE3ED; padding-top: 8px;">
             {t['footer_advisory']}
         </div>
     </div>

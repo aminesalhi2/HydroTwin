@@ -23,6 +23,8 @@ from planner.pump_optimizer import get_default_baseline_plan, get_cost_optimized
 from planner.resilience import run_resilience_simulation
 from app.assets.plotly_template import register_template
 from app.components import (
+    render_hero_header,
+    render_footer,
     render_honesty_banner,
     render_decision_badge,
     render_assumptions_expander,
@@ -50,48 +52,22 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# -------------------------------------------------------------
-# Hero Header
-# -------------------------------------------------------------
-_LOGO_SVG_HERO = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 80" width="48" height="60">
-  <path d="M32 4 C32 4, 8 36, 8 52 C8 66.4 18.8 76 32 76 C45.2 76 56 66.4 56 52 C56 36 32 4 32 4Z" fill="#E8F2FF" stroke="#1E6FD9" stroke-width="2.5"/>
-  <circle cx="32" cy="44" r="5" fill="#2FD3C9"/>
-  <circle cx="20" cy="58" r="4" fill="#1E6FD9"/>
-  <circle cx="44" cy="58" r="4" fill="#1E6FD9"/>
-  <line x1="32" y1="44" x2="20" y2="58" stroke="#0B1F3A" stroke-width="1.5" stroke-opacity="0.6"/>
-  <line x1="32" y1="44" x2="44" y2="58" stroke="#0B1F3A" stroke-width="1.5" stroke-opacity="0.6"/>
-  <line x1="20" y1="58" x2="44" y2="58" stroke="#0B1F3A" stroke-width="1.5" stroke-opacity="0.6"/>
+_LOGO_SVG_SIDEBAR = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 76" width="38" height="46" fill="none" style="display:block;margin:0 auto 10px;">
+  <defs>
+    <linearGradient id="sideDropGrad" x1="32" y1="2" x2="32" y2="74" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2FD3C9"/>
+      <stop offset="100%" stop-color="#1E6FD9"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 3 C32 3 10 32 10 50 C10 63 19.8 73 32 73 C44.2 73 54 63 54 50 C54 32 32 3 32 3 Z"
+        fill="url(#sideDropGrad)" stroke="#2FD3C9" stroke-width="1.6"/>
+  <line x1="32" y1="36" x2="22" y2="54" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="32" y1="36" x2="42" y2="54" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="22" y1="54" x2="42" y2="54" stroke="#2FD3C9" stroke-width="1.8" stroke-linecap="round"/>
+  <circle cx="32" cy="36" r="4" fill="#2FD3C9" stroke="#FFFFFF" stroke-width="1.5"/>
+  <circle cx="22" cy="54" r="3.5" fill="#1E6FD9" stroke="#FFFFFF" stroke-width="1.5"/>
+  <circle cx="42" cy="54" r="3.5" fill="#FFFFFF" stroke="#2FD3C9" stroke-width="1.5"/>
 </svg>"""
-
-_LOGO_SVG_SIDEBAR = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 80" width="40" height="50" style="display:block;margin:0 auto 8px;">
-  <path d="M32 4 C32 4, 8 36, 8 52 C8 66.4 18.8 76 32 76 C45.2 76 56 66.4 56 52 C56 36 32 4 32 4Z" fill="rgba(232,242,255,0.15)" stroke="#2FD3C9" stroke-width="2.5"/>
-  <circle cx="32" cy="44" r="5" fill="#2FD3C9"/>
-  <circle cx="20" cy="58" r="4" fill="#1E6FD9"/>
-  <circle cx="44" cy="58" r="4" fill="#1E6FD9"/>
-  <line x1="32" y1="44" x2="20" y2="58" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
-  <line x1="32" y1="44" x2="44" y2="58" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
-  <line x1="20" y1="58" x2="44" y2="58" stroke="rgba(255,255,255,0.6)" stroke-width="1.5"/>
-</svg>"""
-
-
-def render_hero_header():
-    """Render the full-width hero header with logo, title, tagline, and ribbon."""
-    st.markdown(
-        f"""
-        <div class="ht-hero">
-          <div class="ht-hero-logo">{_LOGO_SVG_HERO}</div>
-          <div class="ht-hero-text">
-            <div class="ht-hero-title">HydroTwin</div>
-            <div class="ht-hero-tagline">Digital twin &amp; AI for drinking-water networks</div>
-          </div>
-          <div class="ht-hero-ribbon">
-            <span class="ht-ribbon-badge">Japan × Tunisia</span>
-            <span class="ht-ribbon-sub">Water + Energy Track</span>
-          </div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
 
 
 # -------------------------------------------------------------
@@ -151,21 +127,26 @@ if "sensor_mode" not in st.session_state:
 with st.sidebar:
     st.markdown(_LOGO_SVG_SIDEBAR, unsafe_allow_html=True)
     st.markdown(
-        '<div style="text-align:center;color:white;font-size:1.1rem;font-weight:700;margin-bottom:2px;">HydroTwin</div>'
-        '<div style="text-align:center;color:rgba(255,255,255,0.5);font-size:0.72rem;margin-bottom:12px;">Japan ⇄ Tunisia Water-Energy Digital Twin</div>',
+        """
+        <div style="text-align:center;margin-bottom:14px;">
+          <div style="color:#FFFFFF;font-size:1.18rem;font-weight:700;letter-spacing:-0.01em;">HydroTwin</div>
+          <div style="color:rgba(255,255,255,0.60);font-size:0.74rem;letter-spacing:0.02em;">Digital Twin · Japan ⇄ Tunisia</div>
+          <div style="margin-top:5px;"><span class="ht-chip ht-chip-offline" style="font-size:0.68rem;padding:2px 8px;">100% Offline Mode</span></div>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
 
     # Language Selector — native names
-    st.markdown('<div class="ht-sidebar-section">🌐 Language</div>', unsafe_allow_html=True)
+    st.markdown('<div class="ht-sidebar-section">🌐 Language / Langue / اللغة / 言語</div>', unsafe_allow_html=True)
     lang_code = st.selectbox(
-        "Language / Langue / اللغة / 言語",
+        "Language Selection",
         options=["en", "fr", "ar", "ja"],
         format_func=lambda x: {
-            "en": "English",
-            "fr": "Français",
             "ar": "العربية",
+            "fr": "Français",
             "ja": "日本語",
+            "en": "English",
         }[x],
         index=0,
         label_visibility="collapsed",
@@ -180,25 +161,54 @@ with st.sidebar:
         st.rerun()
 
     if not st.session_state.demo_mode:
-        st.markdown('<div class="ht-sidebar-section">⚙️ Controls</div>', unsafe_allow_html=True)
-        sensor_mode = st.radio(
+        st.markdown('<div class="ht-sidebar-section">📡 Telemetry Instrumentation</div>', unsafe_allow_html=True)
+        
+        # Segmented Control for Rich vs Sparse
+        sensor_mode_choice = st.segmented_control(
             "Sensor Instrumentation",
             options=["rich", "sparse"],
-            format_func=lambda x: "Dense (24 Sensors, Japanese Style)" if x == "rich" else "Sparse (6 Sensors + 1 Faulty, Utility Style)",
-            index=0 if st.session_state.sensor_mode == "rich" else 1,
-            key="sensor_mode_radio",
+            format_func=lambda x: "Rich (24)" if x == "rich" else "Sparse (6+1)",
+            default=st.session_state.sensor_mode,
+            key="sensor_mode_seg",
+            label_visibility="collapsed",
         )
-        st.session_state.sensor_mode = sensor_mode
+        if sensor_mode_choice and sensor_mode_choice != st.session_state.sensor_mode:
+            st.session_state.sensor_mode = sensor_mode_choice
+            st.rerun()
 
-        st.markdown('<div class="ht-sidebar-section">☀️ Diurnal & Seasonal</div>', unsafe_allow_html=True)
+        # Status chip showing active instrumentation mode & assumed noise
+        if st.session_state.sensor_mode == "rich":
+            st.markdown(
+                """
+                <div style="margin: 6px 0 10px;">
+                  <span class="ht-chip ht-chip-offline" style="font-size:0.70rem;">🇯🇵 Dense (24 Sensors)</span>
+                  <span class="ht-chip" style="font-size:0.70rem;margin-left:4px;color:rgba(255,255,255,0.7);">&sigma; = 0.40 m</span>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            st.caption("Dense telemetry captures localized pressure gradients across all network nodes.")
+        else:
+            st.markdown(
+                """
+                <div style="margin: 6px 0 10px;">
+                  <span class="ht-chip" style="font-size:0.70rem;background:rgba(232,160,32,0.2);color:#F4D03F;">🇹🇳 Sparse (6 Sens + 1 Fault)</span>
+                  <span class="ht-chip" style="font-size:0.70rem;margin-left:4px;color:rgba(255,255,255,0.7);">&sigma; = 0.40 m</span>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            st.caption("Budget utility setup: 6 active transducers + 1 faulty logger reporting zero drop.")
+
+        st.markdown('<div class="ht-sidebar-section">☀️ Hydraulic Timeline & Season</div>', unsafe_allow_html=True)
         season = st.selectbox("Season", ["Summer", "Autumn", "Winter", "Spring"], index=0)
-        diurnal = st.radio("Cycle", ["Day (High Draw)", "Night (Low Draw / Refill)"], index=0)
-        time_slider = st.slider("Timeline Hour", min_value=0, max_value=24, value=12 if diurnal.startswith("Day") else 2)
+        diurnal = st.radio("Cycle Pattern", ["Day (High Draw)", "Night (Low Draw / Refill)"], index=0)
+        time_slider = st.slider("Timeline Hour", min_value=0, max_value=24, value=12 if diurnal.startswith("Day") else 2, help="Hour of 24h simulation dispatch")
 
-        st.markdown('<div class="ht-sidebar-section">💥 Leak & Outage Injection</div>', unsafe_allow_html=True)
+        st.markdown('<div class="ht-sidebar-section">💥 Simulated Incident Injection</div>', unsafe_allow_html=True)
         col_s1, col_s2 = st.columns(2)
         with col_s1:
-            leak_sev = st.selectbox("Severity", ["minor", "moderate", "critical"], index=1)
+            leak_sev = st.selectbox("Severity", ["minor", "moderate", "critical"], index=1, help="Minor <10 m³/h, Moderate 10-50 m³/h, Critical >50 m³/h")
         with col_s2:
             target_district = st.selectbox("Target District", config.DISTRICT_NAMES, index=0)
 
@@ -222,7 +232,7 @@ with st.sidebar:
             st.session_state.active_suspects = rank_suspect_pipes(
                 st.session_state.current_res.pressures,
                 st.session_state.baseline_res.pressures,
-                mode=sensor_mode,
+                mode=st.session_state.sensor_mode,
                 top_k=5,
             )
             st.success(f"Simulated leak injected at node {leak_junction} in {target_district}!")
@@ -235,6 +245,26 @@ with st.sidebar:
             st.session_state.leak_severity = "none"
             st.session_state.active_suspects = []
             st.rerun()
+
+        # Collapsible Advanced Options & Jargon
+        with st.expander("🛠️ Advanced Calibration & Jargon", expanded=False):
+            st.markdown(
+                """
+                <div style="font-size:0.78rem;line-height:1.5;color:rgba(255,255,255,0.8);">
+                  <b>Engineering Terms:</b><br>
+                  • <b>PDD</b>: Pressure Dependent Demand (Wagner eq., scales delivered flow below 15m).<br>
+                  • <b>TOU</b>: Time-of-Use tariff structure (Off-peak / Day / Peak).<br>
+                  • <b>Top-k</b>: Leak candidate containment in top-k ranks.<br>
+                  • <b>Hop</b>: Graph shortest-path distance (edges to incident).<br>
+                  • <b>&sigma; = 0.40 m</b>: Transducer Gaussian noise standard deviation.
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            proj_mode = st.toggle("📽️ Projector Mode (High Contrast)", value=st.session_state.get("projector_mode", False))
+            if proj_mode != st.session_state.get("projector_mode", False):
+                st.session_state.projector_mode = proj_mode
+                st.rerun()
     else:
         st.markdown('<div class="ht-sidebar-section">🎬 Demo Navigation</div>', unsafe_allow_html=True)
         demo_step = st.radio(
@@ -259,6 +289,22 @@ with st.sidebar:
 
 # Inject multilingual CSS for RTL or typography
 st.markdown(get_language_container_css(lang_code), unsafe_allow_html=True)
+
+# High-contrast Projector mode if toggled
+if st.session_state.get("projector_mode"):
+    st.markdown(
+        """
+        <style>
+        .stApp { background-color: #FFFFFF !important; }
+        .ht-hero { border: 2px solid #1E6FD9 !important; }
+        .ht-kpi-card { border: 2px solid #1E6FD9 !important; background: #FFFFFF !important; }
+        .ht-banner { border: 2px solid #D7263D !important; }
+        .ht-advisory { border: 2px solid #1E6FD9 !important; }
+        .ht-limitations { border: 2px solid #0B1F3A !important; }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
 # -------------------------------------------------------------
 # 3. Hero Header
@@ -309,11 +355,41 @@ if st.session_state.demo_mode:
     # Visual stepper
     render_demo_stepper(step_num)
 
-    st.info(f"### {meta['title']} — {meta['badge']}")
-    st.markdown(f"**Step Goal**: {meta['description']}")
+    # Large Top Navigation Controls (Keyboard & projector friendly)
+    col_nav1, col_nav2, col_nav3 = st.columns([1, 2, 1])
+    with col_nav1:
+        if st.button("⬅️ Previous Step", disabled=(step_num <= 1), use_container_width=True, key="top_back_btn"):
+            st.session_state.demo_step -= 1
+            st.rerun()
+    with col_nav2:
+        progress_pct = int(((step_num - 1) / 5) * 100)
+        st.markdown(
+            f"""
+            <div style="text-align:center;padding:2px 0;">
+              <div style="font-weight:700;font-size:0.96rem;color:var(--navy);">Step {step_num} of 6: {meta['title']}</div>
+              <div style="font-size:0.78rem;color:var(--text-secondary);">{meta['description']}</div>
+              <div style="background:#E2E8F0;height:4px;border-radius:2px;margin:6px auto 0;max-width:260px;overflow:hidden;">
+                <div style="background:var(--ocean);height:100%;width:{progress_pct}%;"></div>
+              </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with col_nav3:
+        if st.button("Next Step ➡️", disabled=(step_num >= 6), use_container_width=True, key="top_next_btn"):
+            st.session_state.demo_step += 1
+            st.rerun()
 
     if step_num == 1:
         # Step 1: Rich network + forecast per district
+        st.markdown(
+            """
+            <div style="background:#F0F6FF;border-left:4px solid #1E6FD9;border-radius:8px;padding:10px 14px;margin:12px 0 16px;font-size:0.84rem;">
+              💡 <b>What you are seeing:</b> The complete Net3 digital twin under nominal diurnal demand. Machine learning models predict district hourly consumption with 90% confidence bands while the hydraulic physics engine verifies service pressures.
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
         col_m, col_f = st.columns([3, 2])
         with col_m:
             fig1 = create_network_plotly_figure(
@@ -351,6 +427,14 @@ if st.session_state.demo_mode:
 
     elif step_num == 2:
         # Step 2: Leak injection -> Alarm, suspects, work order
+        st.markdown(
+            """
+            <div style="background:#FFF5F5;border-left:4px solid #D7263D;border-radius:8px;padding:10px 14px;margin:12px 0 16px;font-size:0.84rem;">
+              💡 <b>What you are seeing:</b> Physical burst simulation at node 121 in District 1. HydroTwin computes pressure drop residuals across the network and generates an actionable multilingual work order within 200ms.
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
         col_m2, col_wo = st.columns([3, 2])
         with col_m2:
             fig2 = create_network_plotly_figure(
@@ -378,6 +462,14 @@ if st.session_state.demo_mode:
 
     elif step_num == 3:
         # Step 3: Diurnal Day -> Night pump shift & Duty Rebalancing
+        st.markdown(
+            """
+            <div style="background:#F0FDF4;border-left:4px solid #2E9E6B;border-radius:8px;padding:10px 14px;margin:12px 0 16px;font-size:0.84rem;">
+              💡 <b>What you are seeing:</b> Hydraulic duty-rebalancing between high-head intake Pump 10 (73.8m head, -602 kWh) and lower-head booster Pump 335 (28.8m head, +310 kWh). Achieves 292 kWh/d (-5.5%) energy reduction while strictly honoring the 15m minimum service pressure rule.
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
         st.markdown("#### ⚡ Hydraulic Duty-Rebalancing Pumping Optimization")
         m_def = cache["step3"]["metrics_def"]
         m_opt = cache["step3"]["metrics_opt"]
@@ -410,34 +502,59 @@ if st.session_state.demo_mode:
 
     elif step_num == 4:
         # Step 4: Switch to sparse mode + honest degradation
+        st.markdown(
+            """
+            <div style="background:#FFFBEB;border-left:4px solid #E8A020;border-radius:8px;padding:10px 14px;margin:12px 0 16px;font-size:0.84rem;">
+              💡 <b>What you are seeing:</b> Transparent comparison under sparse telemetry (6 loggers + 1 faulty sensor). We honestly demonstrate performance degradation with paired cluster bootstrap confidence intervals, beating the nearest-sensor baseline (+3.6 pp).
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
         st.markdown("#### 🔬 Rich (Dense Japanese Style) vs. Sparse (Emerging Utility Style)")
         st.warning(
             "HONEST PHYSICAL FACT: In sparse mode (6 telemetry sensors + 1 failing sensor), fewer pressure drop observations "
             "broaden the suspect search radius. We transparently report the accuracy degradation with paired cluster bootstrap CIs rather than claiming unrealistic performance."
         )
 
-        # Evaluation bar chart
+        # Evaluation comparison: Random vs Nearest-Sensor vs HydroTwin (Rich vs Sparse)
         methods = ["Random Baseline", "Nearest-Sensor", "HydroTwin"]
-        rich_top5 = [5.2, 29.1, 36.8]
-        sparse_top5 = [5.2, 12.7, 16.4]
+        
+        # Rich Mode: Top-5 Containment with Paired Cluster Bootstrap 95% CIs
+        rich_vals = [5.2, 29.1, 36.8]
+        rich_err_minus = [5.2 - 2.5, 29.1 - 17.9, 36.8 - 25.6]
+        rich_err_plus = [8.8 - 5.2, 41.4 - 29.1, 49.8 - 36.8]
+        rich_text = ["5.2% [2.5, 8.8]", "29.1% [17.9, 41.4]", "36.8% [25.6, 49.8]"]
+
+        # Sparse Mode: Top-5 Containment with Paired Cluster Bootstrap 95% CIs
+        sparse_vals = [5.2, 12.7, 16.4]
+        sparse_err_minus = [5.2 - 2.5, 12.7 - 5.5, 16.4 - 8.6]
+        sparse_err_plus = [8.8 - 5.2, 21.2 - 12.7, 25.6 - 16.4]
+        sparse_text = ["5.2% [2.5, 8.8]", "12.7% [5.5, 21.2]", "16.4% [8.6, 25.6]"]
+
         fig_eval = go.Figure()
         fig_eval.add_trace(go.Bar(
-            name="Rich Mode",
-            y=methods, x=rich_top5, orientation="h",
-            marker_color=["#8FA8C8", "#E8A020", "#1E6FD9"],
+            name="Dense Mode (24 Sensors)",
+            y=methods, x=rich_vals, orientation="h",
+            error_x=dict(type="data", array=rich_err_plus, arrayminus=rich_err_minus, color="#0B1F3A", thickness=1.5, width=4),
+            text=rich_text, textposition="auto",
+            marker_color="#1E6FD9",
         ))
         fig_eval.add_trace(go.Bar(
-            name="Sparse Mode",
-            y=methods, x=sparse_top5, orientation="h",
-            marker_color=["#8FA8C8", "#E8A020", "#2FD3C9"],
-            visible="legendonly",
+            name="Sparse Mode (6 Sens + 1 Fault)",
+            y=methods, x=sparse_vals, orientation="h",
+            error_x=dict(type="data", array=sparse_err_plus, arrayminus=sparse_err_minus, color="#0B1F3A", thickness=1.5, width=4),
+            text=sparse_text, textposition="auto",
+            marker_color="#2FD3C9",
         ))
         fig_eval.update_layout(
-            title="Node Top-5 Exact Localization (σ=0.4m)",
-            xaxis_title="Accuracy %",
+            title=dict(text="<b>Node Top-5 Exact Containment Accuracy (%)</b> · With 95% Paired Cluster Bootstrap CIs", font=dict(size=13, family="Inter, sans-serif")),
+            xaxis=dict(title="Top-5 Localization Accuracy (%)", range=[0, 60], gridcolor="#DDE3ED"),
+            yaxis=dict(gridcolor="transparent"),
             template="hydrotwin",
-            height=200,
-            barmode="overlay",
+            height=260,
+            barmode="group",
+            margin=dict(l=10, r=20, t=44, b=10),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, bgcolor="rgba(255,255,255,0.9)", bordercolor="#DDE3ED"),
         )
         st.plotly_chart(fig_eval, use_container_width=True)
 
@@ -460,47 +577,124 @@ if st.session_state.demo_mode:
     elif step_num == 5:
         # Step 5: Power cut at pump station -> Resilience Plan & Autonomy
         comp = cache["step5"]["comp_resil"]
-        st.markdown(f"#### 🛡️ Emergency Power Cut Resilience: Pump 10 Outage ({comp.outage_window_str})")
+
+        # Color shift from calm to alert: Emergency Scenario Banner
+        st.markdown(
+            f"""
+            <div style="background: linear-gradient(135deg, rgba(215, 38, 61, 0.12) 0%, rgba(232, 160, 32, 0.08) 100%);
+                        border: 1.5px solid #D7263D; border-left: 6px solid #D7263D; border-radius: 12px;
+                        padding: 16px 20px; margin-bottom: 14px; box-shadow: var(--shadow-sm);">
+              <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                <div style="font-size:1.08rem; font-weight:700; color:#D7263D;">
+                  🚨 CRITICAL SCENARIO: Main Pump Station 10 Blackout ({comp.outage_window_str})
+                </div>
+                <span class="ht-chip" style="background:#D7263D; color:#FFFFFF; font-weight:700;">ACTIVE GRID OUTAGE</span>
+              </div>
+              <div style="font-size:0.84rem; color:#5A6D82; margin-top:6px;">
+                Electrical grid cut leaves the primary intake offline. Elevated tanks drain rapidly to sustain pressure.
+                HydroTwin dispatches pre-fill gravity routing to safeguard District 3 Regional Hospital.
+              </div>
+            </div>
+            <div style="background:#FFF9F8;border-left:4px solid #D7263D;border-radius:8px;padding:10px 14px;margin:0 0 16px;font-size:0.84rem;">
+              💡 <b>What you are seeing:</b> Simulated power cut shutting down Pump 10 (12:00–16:00). The Outage-Blind schedule depletes elevated storage tanks in ~9.3 hours. The Pre-Fill Plan buffers storage tanks in advance, maintaining 92.3% Hospital compliance and extending autonomy to ~12.3 hours (+2.9h).
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
         c1, c2, c3 = st.columns(3)
         c1.metric("Outage-Blind Hospital Compliance", f"{comp.blind_priority_zone_compliance_pct:.1f}%", ">= 18m Head")
         c2.metric("Resilience Plan Hospital Compliance", f"{comp.resilience_priority_zone_compliance_pct:.1f}%", f"{comp.resilience_priority_zone_compliance_pct - comp.blind_priority_zone_compliance_pct:+.1f} pp (Stress-Test)")
         c3.metric("Emergency Action", "Pre-fill Storage Tanks 1 & 3", "Gravity supply routing")
 
-        # Tank gauge bar chart
-        tank_names = ["Tank 1\n(2,050 m³)", "Tank 2\n(4,050 m³)", "Tank 3\n(11,888 m³)"]
-        blind_pcts = [45, 60, 75]
-        resil_pcts = [75, 85, 95]
-        fig_tanks = go.Figure()
-        fig_tanks.add_trace(go.Bar(name="Outage-Blind", x=tank_names, y=blind_pcts, marker_color="#E8A020"))
-        fig_tanks.add_trace(go.Bar(name="Pre-Fill Plan", x=tank_names, y=resil_pcts, marker_color="#2E9E6B"))
-        fig_tanks.update_layout(
-            title="Tank Fill Level at Outage Start (%)",
-            barmode="group",
-            yaxis_range=[0, 110],
+        # Hour-by-Hour Tank Level Drainage Over 24h
+        hours_list = list(range(25))
+        fig_drain = go.Figure()
+        fig_drain.add_trace(go.Scatter(
+            x=hours_list,
+            y=cache["step5"]["res_blind"].pressures["1"].iloc[:25],
+            mode="lines",
+            name="Tank 1: Outage-Blind (Draining)",
+            line=dict(color="#E8A020", width=2, dash="dash"),
+        ))
+        fig_drain.add_trace(go.Scatter(
+            x=hours_list,
+            y=cache["step5"]["res_resil"].pressures["1"].iloc[:25],
+            mode="lines",
+            name="Tank 1: Pre-Fill Plan (Protected)",
+            line=dict(color="#2E9E6B", width=2.5),
+        ))
+        fig_drain.add_trace(go.Scatter(
+            x=hours_list,
+            y=cache["step5"]["res_blind"].pressures["3"].iloc[:25],
+            mode="lines",
+            name="Tank 3 (Main): Outage-Blind",
+            line=dict(color="#8FA8C8", width=1.5, dash="dot"),
+        ))
+        fig_drain.add_trace(go.Scatter(
+            x=hours_list,
+            y=cache["step5"]["res_resil"].pressures["3"].iloc[:25],
+            mode="lines",
+            name="Tank 3 (Main): Pre-Fill Plan",
+            line=dict(color="#1E6FD9", width=2.5),
+        ))
+        fig_drain.add_vrect(
+            x0=12, x1=16,
+            fillcolor="rgba(215, 38, 61, 0.12)",
+            line_width=1, line_color="#D7263D", line_dash="dash",
+            annotation_text="Pump 10 Outage (12h-16h)",
+            annotation_position="top left",
+            annotation_font=dict(color="#D7263D", size=11, family="Inter, sans-serif"),
+        )
+        fig_drain.update_layout(
+            title=dict(text="<b>Hourly Elevated Tank Level Drainage (m Head) Across 24h Timeline</b>", font=dict(size=13, family="Inter, sans-serif")),
+            xaxis=dict(title="Timeline Hour of Day", range=[0, 24], gridcolor="#DDE3ED"),
+            yaxis=dict(title="Water Level / Pressure Head (m)", gridcolor="#DDE3ED"),
             template="hydrotwin",
-            height=280,
+            height=290,
+            margin=dict(l=10, r=10, t=44, b=10),
+            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, bgcolor="rgba(255,255,255,0.9)", bordercolor="#DDE3ED"),
         )
-        st.plotly_chart(fig_tanks, use_container_width=True)
+        st.plotly_chart(fig_drain, use_container_width=True)
 
-        # Autonomy display
-        st.markdown(
-            """
-            <div class="ht-autonomy-row">
-              <div class="ht-autonomy-card ht-autonomy-blind">
-                <div class="ht-auto-label">Outage-Blind Autonomy</div>
-                <div class="ht-auto-value">~9.3 h</div>
-                <div class="ht-auto-sub">Mean across 12 start times</div>
-              </div>
-              <div class="ht-autonomy-card ht-autonomy-resil">
-                <div class="ht-auto-label">Pre-Fill Plan Autonomy</div>
-                <div class="ht-auto-value">~12.3 h</div>
-                <div class="ht-auto-sub">+2.9 h mean extension</div>
-              </div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+        # Tank gauge bar chart & Autonomy display
+        col_tanks, col_auto = st.columns([3, 2])
+        with col_tanks:
+            tank_names = ["Tank 1\n(2,050 m³)", "Tank 2\n(4,050 m³)", "Tank 3\n(11,888 m³)"]
+            blind_pcts = [45, 60, 75]
+            resil_pcts = [75, 85, 95]
+            fig_tanks = go.Figure()
+            fig_tanks.add_trace(go.Bar(name="Outage-Blind", x=tank_names, y=blind_pcts, marker_color="#E8A020"))
+            fig_tanks.add_trace(go.Bar(name="Pre-Fill Plan", x=tank_names, y=resil_pcts, marker_color="#2E9E6B"))
+            fig_tanks.update_layout(
+                title=dict(text="<b>Tank Fill Level at Outage Start (%)</b>", font=dict(size=13, family="Inter, sans-serif")),
+                barmode="group",
+                yaxis_range=[0, 110],
+                template="hydrotwin",
+                height=260,
+                margin=dict(l=10, r=10, t=40, b=10),
+                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, bgcolor="rgba(255,255,255,0.9)", bordercolor="#DDE3ED"),
+            )
+            st.plotly_chart(fig_tanks, use_container_width=True)
+
+        with col_auto:
+            st.markdown(
+                """
+                <div class="ht-autonomy-row" style="margin-top:20px;">
+                  <div class="ht-autonomy-card ht-autonomy-blind">
+                    <div class="ht-auto-label">Outage-Blind Autonomy</div>
+                    <div class="ht-auto-value">~9.3 h</div>
+                    <div class="ht-auto-sub">Mean across 12 start times</div>
+                  </div>
+                  <div class="ht-autonomy-card ht-autonomy-resil">
+                    <div class="ht-auto-label">Pre-Fill Plan Autonomy</div>
+                    <div class="ht-auto-value">~12.3 h</div>
+                    <div class="ht-auto-sub">+2.9 h mean extension</div>
+                  </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
 
         st.markdown("##### ⏱️ Network Autonomy Sweep: Blind vs. Resilience Pre-Fill Plan (Starts Every 2h)")
         autonomy_df = pd.DataFrame([
@@ -530,6 +724,14 @@ if st.session_state.demo_mode:
 
     elif step_num == 6:
         # Step 6: Closing Pitch & JICA Roadmap
+        st.markdown(
+            """
+            <div style="background:#F0FDF4;border-left:4px solid #2E9E6B;border-radius:8px;padding:10px 14px;margin:12px 0 16px;font-size:0.84rem;">
+              💡 <b>What you are seeing:</b> Bilateral partnership roadmap. Physics-informed digital twins run 100% offline on standard utility hardware, ready for low-risk sandbox piloting with Embassy of Japan and SONEDE.
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
         st.markdown("#### 🤝 Bilateral Roadmap: Embassy of Japan & SONEDE Pilot")
         st.success(
             "**Operational Conclusion**: HydroTwin demonstrates that physics-driven digital twins and lightweight AI "
@@ -679,3 +881,6 @@ else:
                 """,
                 unsafe_allow_html=True,
             )
+
+# Always render footer at bottom of page
+render_footer()
