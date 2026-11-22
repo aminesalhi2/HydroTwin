@@ -80,14 +80,15 @@ def render_assumptions_expander():
             st.markdown(f"- **Tunisia Loss Range**: `{config.TUNISIA_LOSS_RANGE_PCT[0]}% - {config.TUNISIA_LOSS_RANGE_PCT[1]}%`")
 
 def render_impact_cards(
-    water_lost_m3: float,
+    water_lost_m3: float = 0.0,
     water_saved_m3: float = 0.0,
     kwh_saved: float = 291.7,
     cost_saved_tnd: float = 69.7,
     suspect_pipes_count: int = 5,
     critical_alerts: int = 0,
     sensor_mode: str = "rich",
-    noise_sigma: float = 0.40
+    noise_sigma: float = 0.40,
+    **kwargs
 ):
     """Render top summary metric cards for executive decision-makers."""
     mode_label = "Rich Mode (24 sens)" if sensor_mode == "rich" else "Sparse Mode (6 sens)"
