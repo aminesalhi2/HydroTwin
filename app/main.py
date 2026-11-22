@@ -461,21 +461,22 @@ if st.session_state.demo_mode:
             )
             st.plotly_chart(fig2, use_container_width=True)
         with col_wo:
-            st.markdown(cache["step2"]["work_order"]["html"], unsafe_allow_html=True)
+            wo_step2 = cache["step2"]["work_orders"].get(lang_code, cache["step2"]["work_orders"]["en"])
+            st.markdown(wo_step2["html"], unsafe_allow_html=True)
 
     elif step_num == 3:
         p_hours = list(range(24))
-        p_def = cache["step3"]["sched_def"]
-        p_opt = cache["step3"]["sched_opt"]
+        p_base = [1.0 if (h < 6 or h >= 18) else 0.0 for h in p_hours]
+        p_opt = [1.0 if (h < 8 or h >= 21) else 0.0 for h in p_hours]
 
         fig_sched = go.Figure()
         fig_sched.add_trace(go.Scatter(
-            x=p_hours, y=p_def["Pump 10"],
+            x=p_hours, y=p_base,
             mode="lines", name="Default Baseline (Pump 10)",
             line=dict(color="#64748B", width=2, dash="dash"),
         ))
         fig_sched.add_trace(go.Scatter(
-            x=p_hours, y=p_opt["Pump 10"],
+            x=p_hours, y=p_opt,
             mode="lines", name="Optimized Schedule (Pump 10)",
             fill="tonexty",
             fillcolor="rgba(13, 148, 136, 0.12)",
