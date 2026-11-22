@@ -59,6 +59,10 @@ if "wn" not in st.session_state:
     st.session_state.active_suspects = []
     st.session_state.demo_step = 1
     st.session_state.demo_mode = False
+    st.session_state.sensor_mode = "rich"
+
+if "sensor_mode" not in st.session_state:
+    st.session_state.sensor_mode = "rich"
 
 # -------------------------------------------------------------
 # 2. Sidebar Controls
@@ -90,8 +94,10 @@ with st.sidebar:
             "Sensor Instrumentation",
             options=["rich", "sparse"],
             format_func=lambda x: "Dense (24 Sensors, Japanese Style)" if x == "rich" else "Sparse (6 Sensors + 1 Faulty, Utility Style)",
-            index=0
+            index=0 if st.session_state.sensor_mode == "rich" else 1,
+            key="sensor_mode_radio"
         )
+        st.session_state.sensor_mode = sensor_mode
         
         st.markdown("### ☀️ Diurnal & Seasonal Settings")
         season = st.selectbox("Season", ["Summer", "Autumn", "Winter", "Spring"], index=0)
@@ -300,11 +306,11 @@ if st.session_state.demo_mode:
         with col_r:
             st.markdown("##### 🇯🇵 Dense Mode (24 Sensors)")
             st.dataframe(pd.DataFrame(cache["step4"]["suspects_rich"])[["rank", "pipe_id", "district", "probability_pct"]], hide_index=True, use_container_width=True)
-            st.success("Top-5 Suspect Containment: **20.0%** [15.0%, 25.5%] | Mean Hop Error: **4.09 hops**")
+            st.success("Top-5 Suspect Containment: Node **36.8%** [25.6%, 49.8%] (Pipe: **30.9%** [20.8%, 42.2%]) | Mean Hop Error: **4.6 hops**")
         with col_s:
             st.markdown("##### 🇹🇳 Sparse Mode (6 Sensors + 1 Failing)")
             st.dataframe(pd.DataFrame(cache["step4"]["suspects_sparse"])[["rank", "pipe_id", "district", "probability_pct"]], hide_index=True, use_container_width=True)
-            st.error("Top-5 Suspect Containment: **15.9%** [11.4%, 20.9%] | Mean Hop Error: **5.34 hops**")
+            st.error("Top-5 Suspect Containment: Node **16.4%** [8.6%, 25.6%] (Pipe: **12.7%** [5.5%, 21.2%]) | Mean Hop Error: **9.0 hops**")
 
     elif step_num == 5:
         # Step 5: Power cut at pump station -> Resilience Plan
@@ -313,7 +319,7 @@ if st.session_state.demo_mode:
         
         c1, c2, c3 = st.columns(3)
         c1.metric("Outage-Blind Hospital Compliance", f"{comp.blind_priority_zone_compliance_pct:.1f}%", ">= 18m Head")
-        c2.metric("Resilience Plan Hospital Compliance", f"{comp.resilience_priority_zone_compliance_pct:.1f}%", f"+{comp.resilience_priority_zone_compliance_pct - comp.blind_priority_zone_compliance_pct:.1f}% Protected")
+        c2.metric("Resilience Plan Hospital Compliance", f"{comp.resilience_priority_zone_compliance_pct:.1f}%", f"{comp.resilience_priority_zone_compliance_pct - comp.blind_priority_zone_compliance_pct:+.1f} pp (Stress-Test)")
         c3.metric("Emergency Action", "Pre-fill Storage Tanks 1 & 3", "Gravity supply routing")
         
         st.markdown("##### 📋 Recommended Advisory Actions for Water Operators:")
