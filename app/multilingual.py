@@ -35,13 +35,16 @@ def get_language_container_css(lang: str) -> str:
             .multilingual-card {
                 direction: rtl;
                 text-align: right;
-                font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
-                background-color: #fdfefe;
-                border: 1px solid #dcdfe6;
-                border-right: 6px solid #e6a23c;
-                border-radius: 6px;
+                font-family: 'Noto Sans Arabic', 'Segoe UI', Tahoma, Arial, sans-serif;
+                background-color: var(--white, #FFFFFF);
+                border: 1px solid var(--border, #DDE3ED);
+                border-right: 6px solid var(--amber, #E8A020);
+                border-left: 1px solid var(--border, #DDE3ED);
+                border-radius: 8px;
                 padding: 16px 20px;
                 margin-top: 10px;
+                color: var(--text-primary, #0B1F3A);
+                line-height: 1.7;
             }
         </style>
         """
@@ -51,13 +54,15 @@ def get_language_container_css(lang: str) -> str:
             .multilingual-card {
                 direction: ltr;
                 text-align: left;
-                font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
-                background-color: #fdfefe;
-                border: 1px solid #dcdfe6;
-                border-left: 6px solid #409eff;
-                border-radius: 6px;
+                font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Meiryo', 'Yu Gothic', sans-serif;
+                background-color: var(--white, #FFFFFF);
+                border: 1px solid var(--border, #DDE3ED);
+                border-left: 6px solid var(--ocean, #1E6FD9);
+                border-radius: 8px;
                 padding: 16px 20px;
                 margin-top: 10px;
+                color: var(--text-primary, #0B1F3A);
+                line-height: 1.8;
             }
         </style>
         """
@@ -67,13 +72,15 @@ def get_language_container_css(lang: str) -> str:
             .multilingual-card {
                 direction: ltr;
                 text-align: left;
-                font-family: system-ui, -apple-system, sans-serif;
-                background-color: #fdfefe;
-                border: 1px solid #dcdfe6;
-                border-left: 6px solid #67c23a;
-                border-radius: 6px;
+                font-family: 'Inter', system-ui, -apple-system, sans-serif;
+                background-color: var(--white, #FFFFFF);
+                border: 1px solid var(--border, #DDE3ED);
+                border-left: 6px solid var(--green, #2E9E6B);
+                border-radius: 8px;
                 padding: 16px 20px;
                 margin-top: 10px;
+                color: var(--text-primary, #0B1F3A);
+                line-height: 1.6;
             }
         </style>
         """
