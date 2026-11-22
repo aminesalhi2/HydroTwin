@@ -1,122 +1,105 @@
-# HydroTwin Design System — Calm Precision
+# HydroTwin Design Specification — Control-Room Precision
 
-> Japanese Minimalism × Mediterranean Warmth
+> **Identity**: Japan × Tunisia · Clean, restrained, high-end control-room instrumentation.
+> **Benchmark aesthetic**: Linear / Stripe / Apple dashboards — generous whitespace, hairline borders, tabular figures, zero visual clutter.
 
-## Palette
+---
 
-| Token | Hex | Usage |
-|-------|-----|-------|
-| `--navy` | `#0B1F3A` | Primary dark, text, backgrounds |
-| `--ocean` | `#1E6FD9` | Primary blue, links, active states |
-| `--aqua` | `#2FD3C9` | Water accent, highlights, success indicators |
-| `--sand` | `#F4EFE6` | Light background (Mediterranean warmth) |
-| `--vermilion` | `#D7263D` | Alerts, honesty banner, Japan nod |
-| `--green` | `#2E9E6B` | Healthy/OK, completed states |
-| `--amber` | `#E8A020` | Warnings, minor severity |
-| `--white` | `#FFFFFF` | Card backgrounds |
-| `--text-primary` | `#0B1F3A` | Main text |
-| `--text-secondary` | `#4A6080` | Supporting text, labels |
-| `--border` | `#DDE3ED` | Dividers, card borders |
+## 1. Design Tokens & Palette
 
-## Fonts
+Strict 4-color semantic palette defined in `app/assets/theme.css` and `.streamlit/config.toml`:
 
-All fonts are bundled as local `woff2` files in `app/assets/fonts/`. **No CDN dependency.**
+| Token | Value | Semantic Role |
+|---|---|---|
+| `--ink-bg` | `#0B1528` | Sidebar, control-room console panels, map canvas |
+| `--ink-surface` | `#132238` | Sidebar inputs, dropdowns, segmented control base |
+| `--canvas-bg` | `#F8F9FA` | Main page canvas (warm off-white, projector-friendly) |
+| `--card-bg` | `#FFFFFF` | Metric cards, ticket surfaces, popovers |
+| `--hairline` | `#E2E8F0` | 1px clean dividers and card borders |
+| `--teal` | `#0D9488` | **Single primary water accent** (brand, active tabs, healthy states) |
+| `--teal-subtle` | `rgba(13, 148, 136, 0.08)` | Active selections, soft chips, highlight fills |
+| `--vermilion` | `#E11D48` | **Single reserved alert color** (leaks, active outages, critical warnings ONLY) |
+| `--vermilion-subtle` | `rgba(225, 29, 72, 0.08)` | Alert ticket backgrounds, outage band fills |
+| `--amber` | `#D97706` | Secondary advisory notices, moderate warnings |
+| `--text-primary` | `#0F172A` | Primary typography (high-contrast slate) |
+| `--text-secondary` | `#475569` | Secondary labels, units, helper text |
+| `--text-muted` | `#94A3B8` | Subtle captions, timestamps, reference lines |
 
-| Font | Usage | File |
-|------|-------|------|
-| **Inter** (400/500/600/700) | Latin text, UI elements | `Inter-{weight}.woff2` |
-| **Noto Sans Arabic** (400/700) | Arabic RTL content | `NotoSansArabic-{weight}.woff2` |
-| **Noto Sans JP** (400/700) | Japanese content | `NotoSansJP-{weight}.woff2` |
+---
 
-Fallback chain: `system-ui → -apple-system → sans-serif` (works fully offline even if woff2 stubs are invalid).
+## 2. Typography & Iconography
 
-## Components
+- **UI Font**: `Inter` (local woff2: 400, 500, 600, 700), `system-ui, -apple-system, sans-serif`.
+- **Numbers / Metrics**: Monospace tabular figures (`font-variant-numeric: tabular-nums`, monospace fallback for gauges).
+- **Arabic Typography**: `Noto Sans Arabic` (local woff2), auto-applied on `[lang="ar"]` with full right-to-left mirroring (`direction: rtl`).
+- **Japanese Typography**: `Noto Sans JP` (local woff2), clean line-height and letter-spacing for kanji/kana.
+- **Iconography**: **100% SVG line icons (2px stroke)**. Zero emojis across the entire interface (sidebar, buttons, tabs, status pills, work orders).
 
-### `.ht-hero`
-Full-width hero header card. Navy gradient background, flex row: logo left, title+tagline center, ribbon right. Used once at top of every page.
+---
 
-### `.ht-banner`
-Honesty disclaimer — always visible, vermilion left border 6px, sand background. Contains the simulated-data warning and offline chip.
+## 3. Layout & Information Density
 
-### `.ht-advisory`
-Advisory badge — ocean-tinted `#E8F2FF` background, 4px ocean left border. Displays the decision-rule text.
+- **Header**:
+  - Left: Refined SVG droplet network mark + "HydroTwin" + tagline *"A digital twin that finds leaks and cuts pumping energy."*
+  - Right: Single slim clickable pill: `Simulated data · advisory only` $\to$ opens `st.popover` with concise bulleted prototype limits.
+  - Eliminated: bulky red disclaimer banner, blue advisory box, and honest limitations panel from the default viewport.
+- **Top Stepper**:
+  - Horizontal clean segmented scenario switcher: `1 Normal` · `2 Leak` · `3 Night Pumping` · `4 Power Outage`.
+  - One-click instant dispatch (<150 ms) to that scenario.
+- **KPI Cards (Top Row, Exactly 4)**:
+  1. **Water Loss Rate**: Primary value in m³/h (0 if healthy; vermilion if leak active) + subtext.
+  2. **Pumping Energy**: Primary value `292 kWh/d saved` + small secondary `Range: 0–583 kWh/d` + mini sparkline.
+  3. **Tariff Savings**: Primary value `33.6 TND/d` (TOU rate) + secondary `86.2 TND/d flat tariff`.
+  4. **Network State**: "Nominal (100% Compliance)" or "Incident Active: District 1" with hairline top accent.
 
-### `.ht-limitations`
-Honest limitations box — white bg, `#DDE3ED` border, grey left border 5px. Bullet list of prototype constraints.
+---
 
-### `.ht-kpi-grid` / `.ht-kpi-card`
-5-column responsive grid of KPI summary cards. Each card has a colored top border (`kpi-blue`, `kpi-green`, `kpi-ocean`, `kpi-red`, `kpi-aqua`), 16px border-radius, card shadow, icon + label + value + sublabel layout.
+## 4. Plotly Chart Template (`hydrotwin_clean`)
 
-### `.ht-stepper`
-Demo stepper — flex row of numbered circles (32px) connected by lines. Active circle = ocean, completed = green, todo = sand/grey.
+Standardized Plotly theme applied across every chart:
+- **Geometry**: 2px thin traces; fill areas at 10% opacity (`rgba(13, 148, 136, 0.10)`).
+- **Grid & Axes**: Transparent background, no outer frame/box, horizontal dotted gridlines only (`#E2E8F0`, 1px dot). Zero vertical gridlines.
+- **Threshold Lines**: Quiet reference lines (`add_hline`) with right-side annotations for 15 m minimum pressure rule.
+- **Event Annotations**:
+  - Leak start: Vermilion marker + vertical dashed hairline.
+  - Pump outage window: Subtle shaded band (`rgba(225, 29, 72, 0.08)`) with "Pump Outage" label.
+  - Off-peak tariff strip: Soft teal band (`rgba(13, 148, 136, 0.05)`).
+- **Hover**: Compact unified card showing time, exact metric, units, and delta vs baseline.
+- **Legend**: Inline annotations at trace ends or compact horizontal pill bar at the bottom; never obscuring chart headers.
 
-### `.ht-work-card`
-Work order card with severity badge. Badge classes: `severity-minor` (amber), `severity-moderate` (orange), `severity-critical` (vermilion), `severity-healthy` (green).
+---
 
-### `.multilingual-card`
-Language-aware container. RTL Arabic gets right border + Noto Sans Arabic. Japanese gets Noto Sans JP. LTR languages get Inter.
+## 5. Map Refinements
 
-### `.ht-autonomy-row` / `.ht-autonomy-card`
-Two-column display for outage autonomy metrics. Blind = amber theme, Resilience = green theme.
+- **Dark Navy Canvas**: Deep control-room contrast (`#0B1528`).
+- **District Zones**: Translucent convex hulls with soft fill and subtle dashed outline.
+- **Label Collision Fix**: Offset vectors for clustered node labels (e.g. `Res River` vs `Pump 335`, `Res Lake` vs `Pump 10`) preventing text overlap.
+- **Pipes**: 1.5–3.5px width scaled by flow; muted semi-transparent `#334155`.
+- **Pressure Color Scale**: Perceptually uniform (Teal $\to$ Amber $\to$ Vermilion).
+- **Leak Marker**: Vermilion target ring with outer glow halo and compact inspection tag.
 
-## Light/Dark Mode
+---
 
-The CSS includes `@media (prefers-color-scheme: dark)` overrides that:
-- Flip `--sand` to `#0F1A2E` (deep navy background)
-- Flip `--card-bg` to `#1A2A42`
-- Flip `--border` to `#2A3A52`
-- Adjust text colors for contrast
+## 6. Functional Tabs
 
-> [!NOTE]
-> Streamlit's own theme config in `.streamlit/config.toml` takes precedence. Dark mode media queries serve as a fallback for the HTML report export.
+1. **Digital Twin Map**: Live hydraulic state, timeline hour slider, clean bottom legend.
+2. **Leak Detection & Work Orders**:
+   - Work order rendered as an engineering ticket (severity pill, target DMA, estimated burst flow, prioritized suspect pipes as confidence bars, actionable step).
+   - District water balance table with inline gap progress bars.
+3. **Energy & Outage**:
+   - Before/after pumping power curves with shaded energy saving area.
+   - Tank autonomy drainage curves (Outage-Blind vs Pre-Fill Plan).
+4. **Operator Assistant**:
+   - Clean chat-style response card with language pills and full RTL support for Arabic.
 
-## Projector Mode
+---
 
-Add class `ht-projector` to `<body>` or `.stApp` for high-contrast mode (larger KPI values, thicker top borders, white background). Useful for conference demos.
+## 7. Implementation Roadmap
 
-To activate: inject `<script>document.body.classList.add('ht-projector')</script>` via `st.markdown`.
-
-## Network Map Design
-
-The Plotly network figure uses a **dark navy background** (`plot_bgcolor="#0B1F3A"`) for a "digital twin control room" aesthetic:
-- Pipes: `#2A4A6A` (muted, readable on dark)
-- Junctions: Colored by pressure using `PRESSURE_COLORSCALE` (blue→aqua→amber→red)
-- Suspect pipes: Rank 1 = vermilion width 7, Rank 2–3 = amber width 5, Rank 4–5 = yellow width 3
-- Pumps: Diamond marker, navy fill, aqua border
-- Tanks: Square marker, aqua fill, navy border
-- Active leak: Star + ring (pulsing ring effect via two traces)
-
-## Rollback Instructions to `demo-freeze-4`
-
-To revert the working directory or switch back to the pre-design tag `demo-freeze-4`:
-
-```bash
-# Check the diff between current branch and demo-freeze-4
-git diff demo-freeze-4
-
-# Switch back to the clean demo-freeze-4 tag
-git checkout demo-freeze-4
-
-# Or to discard changes on the design branch and reset to demo-freeze-4:
-git reset --hard demo-freeze-4
-```
-
-> [!CAUTION]
-> Rollback removes ALL design changes. The `.streamlit/config.toml` and `app/assets/` directory will be gone. Run `git stash` first if you want to preserve any work.
-
-## File Inventory
-
-| File | Purpose |
-|------|---------|
-| `.streamlit/config.toml` | Streamlit theme configuration |
-| `app/assets/theme.css` | Full design system CSS |
-| `app/assets/logo.svg` | Water drop + network graph logo (64×80) |
-| `app/assets/favicon.svg` | Smaller favicon version (32×40) |
-| `app/assets/plotly_template.py` | Custom Plotly `hydrotwin` template |
-| `app/assets/fonts/*.woff2` | Offline font bundles |
-| `app/components.py` | Premium UI components (all signatures preserved) |
-| `app/main.py` | Main app with hero header + demo stepper |
-| `app/multilingual.py` | Updated CSS for RTL/JP font references |
-| `app/reports.py` | HTML report with new palette |
-| `docs/DESIGN.md` | This document |
-| `docs/screenshots/README.md` | Screenshot guide |
+1. **Tokens & CSS**: Update `app/assets/theme.css` with clean palette, hairline borders, remove emojis.
+2. **Header & Stepper**: Modern header layout with `st.popover` for advisory notice, horizontal scenario stepper.
+3. **KPI Cards**: Max 4 cards with single primary numbers, tabular figures, secondary range text.
+4. **Plotly Template**: Thin lines, dotted horizontal grid, threshold lines, shaded outage/tariff bands.
+5. **Map**: Offset labels to fix overlaps, clean pipe widths, compact bottom legend.
+6. **Tabs Polish**: Ticket work orders, inline balance bars, clean assistant interface.
+7. **Verification & Commit**: Full pytest suite, visual snapshots, atomic commits on branch `design`.
