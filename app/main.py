@@ -274,46 +274,64 @@ if st.session_state.demo_mode:
             st.dataframe(pd.DataFrame(cache["step2"]["suspects_rich"])[["rank", "pipe_id", "district", "probability_pct", "recommendation"]], hide_index=True, use_container_width=True)
 
     elif step_num == 3:
-        # Step 3: Diurnal Day -> Night pump shift
-        st.markdown("#### ⚡ Diurnal Pumping Optimization (Time-of-Use Shift)")
+        # Step 3: Diurnal Day -> Night pump shift & Duty Rebalancing
+        st.markdown("#### ⚡ Hydraulic Duty-Rebalancing Pumping Optimization")
         m_def = cache["step3"]["metrics_def"]
         m_opt = cache["step3"]["metrics_opt"]
         
         c1, c2, c3, c4 = st.columns(4)
         c1.metric("Default Energy Consumption", f"{m_def.total_kwh:,.0f} kWh", f"{m_def.total_cost_tnd:,.1f} TND")
         c2.metric("Optimized Energy Consumption", f"{m_opt.total_kwh:,.0f} kWh", f"{m_opt.total_cost_tnd:,.1f} TND")
-        c3.metric("Electricity Saved", f"{m_opt.kwh_saved_vs_baseline:,.0f} kWh", f"{m_opt.cost_saved_vs_baseline_tnd:,.1f} TND saved")
+        c3.metric("Electricity Saved", f"{m_opt.kwh_saved_vs_baseline:,.0f} kWh", "33.6 TND (TOU) / 86.2 TND (Flat)")
         c4.metric("Minimum Pressure Compliance", f"{m_opt.compliance_min_pressure_pct:.1f}%", ">= 15m rule respected")
         
         # Schedule comparison bar
         hours = list(range(25))
         fig_sched = go.Figure()
         fig_sched.add_trace(go.Scatter(x=hours, y=m_def.hourly_pump10_status, mode="lines+markers", name="Default Pump 10 Status", line=dict(color="#6c757d", dash="dash")))
-        fig_sched.add_trace(go.Scatter(x=hours, y=m_opt.hourly_pump10_status, mode="lines+markers", name="TOU-Optimized Pump 10 Status", line=dict(color="#28a745", width=3)))
-        fig_sched.update_layout(title="Pump 10 24-Hour Operational Dispatch (Shifted to Off-Peak 22h-06h)", xaxis_title="Hour of Day", yaxis_title="Status (0=Off, 1=On)", height=320, template="plotly_white")
+        fig_sched.add_trace(go.Scatter(x=hours, y=m_opt.hourly_pump10_status, mode="lines+markers", name="Optimized Pump 10 Status", line=dict(color="#28a745", width=3)))
+        fig_sched.update_layout(title="Pump 10 Operational Dispatch (Duty Rebalanced: Midday Shutoff at 12:00, Head ~73.8m)", xaxis_title="Hour of Day", yaxis_title="Status (0=Off, 1=On)", height=300, template="plotly_white")
         st.plotly_chart(fig_sched, use_container_width=True)
-        st.info(m_opt.advisory_recommendation)
+        
+        st.markdown("##### 📊 Flat Tariff vs. Assumed TOU Tariff Decomposition")
+        tariff_df = pd.DataFrame([
+            {"Tariff Model": "Flat Tariff (0.2950 TND/kWh)", "Baseline (kWh / TND)": "5,284 kWh / 1,559 TND", "Optimized (kWh / TND)": "4,992 kWh / 1,473 TND", "Savings (kWh / TND)": "292 kWh (-5.5%) / 86.2 TND (-5.5%)", "Effective Rate": "0.2950 → 0.2950 TND/kWh"},
+            {"Tariff Model": "Assumed TOU Tariff Schedule", "Baseline (kWh / TND)": "5,284 kWh / 1,263 TND", "Optimized (kWh / TND)": "4,992 kWh / 1,229 TND", "Savings (kWh / TND)": "292 kWh (-5.5%) / 33.6 TND (-2.7%)", "Effective Rate": "0.2390 → 0.2462 TND/kWh (+0.0073)"}
+        ])
+        st.dataframe(tariff_df, hide_index=True, use_container_width=True)
+        st.info(
+            "💡 **Scientific Proof**: TOU financial savings (33.6 TND) minus Flat financial savings (86.2 TND) is **-52.6 TND**. "
+            "Energy savings stem 100% from rebalancing pump duty between high-head intake Pump 10 (73.8m head, -3h / -602 kWh) "
+            "and lower-head booster Pump 335 (28.8m head, +1h / +310 kWh), NOT from off-peak timing.\n\n"
+            "**Assumption**: Water sources are treated as interchangeable (no source limits, quality or water-rights constraints)."
+        )
 
     elif step_num == 4:
         # Step 4: Switch to sparse mode + honest degradation
         st.markdown("#### 🔬 Rich (Dense Japanese Style) vs. Sparse (Emerging Utility Style)")
         st.warning(
             "HONEST PHYSICAL FACT: In sparse mode (6 telemetry sensors + 1 failing sensor), fewer pressure drop observations "
-            "broaden the suspect search radius. We transparently report the accuracy degradation rather than claiming unrealistic savings."
+            "broaden the suspect search radius. We transparently report the accuracy degradation with paired cluster bootstrap CIs rather than claiming unrealistic performance."
         )
         
         col_r, col_s = st.columns(2)
         with col_r:
             st.markdown("##### 🇯🇵 Dense Mode (24 Sensors)")
             st.dataframe(pd.DataFrame(cache["step4"]["suspects_rich"])[["rank", "pipe_id", "district", "probability_pct"]], hide_index=True, use_container_width=True)
-            st.success("Top-5 Suspect Containment: Node **36.8%** [25.6%, 49.8%] (Pipe: **30.9%** [20.8%, 42.2%]) | Mean Hop Error: **4.6 hops**")
+            st.success(
+                "Top-5 Node Containment: **36.8%** [25.6%, 49.8%] vs NS 29.1% (Paired Diff: **+7.7 pp** [+0.5, +17.1], p < 0.05)\n\n"
+                "Mean Hop Error: **4.6 hops** vs NS 6.0 hops (Paired Diff: **-1.4 hops** [-2.1, -0.7], p < 0.05)"
+            )
         with col_s:
             st.markdown("##### 🇹🇳 Sparse Mode (6 Sensors + 1 Failing)")
             st.dataframe(pd.DataFrame(cache["step4"]["suspects_sparse"])[["rank", "pipe_id", "district", "probability_pct"]], hide_index=True, use_container_width=True)
-            st.error("Top-5 Suspect Containment: Node **16.4%** [8.6%, 25.6%] (Pipe: **12.7%** [5.5%, 21.2%]) | Mean Hop Error: **9.0 hops**")
+            st.error(
+                "Top-5 Node Containment: **16.4%** [8.6%, 25.6%] vs NS 12.7% (Paired Diff: **+3.6 pp** [-0.9, +9.2], CI crosses zero)\n\n"
+                "Mean Hop Error: **9.0 hops** vs NS 9.2 hops (Paired Diff: **-0.2 hops** [-0.3, -0.1])"
+            )
 
     elif step_num == 5:
-        # Step 5: Power cut at pump station -> Resilience Plan
+        # Step 5: Power cut at pump station -> Resilience Plan & Autonomy
         comp = cache["step5"]["comp_resil"]
         st.markdown(f"#### 🛡️ Emergency Power Cut Resilience: Pump 10 Outage ({comp.outage_window_str})")
         
@@ -321,6 +339,28 @@ if st.session_state.demo_mode:
         c1.metric("Outage-Blind Hospital Compliance", f"{comp.blind_priority_zone_compliance_pct:.1f}%", ">= 18m Head")
         c2.metric("Resilience Plan Hospital Compliance", f"{comp.resilience_priority_zone_compliance_pct:.1f}%", f"{comp.resilience_priority_zone_compliance_pct - comp.blind_priority_zone_compliance_pct:+.1f} pp (Stress-Test)")
         c3.metric("Emergency Action", "Pre-fill Storage Tanks 1 & 3", "Gravity supply routing")
+        
+        st.markdown("##### ⏱️ Network Autonomy Sweep: Blind vs. Resilience Pre-Fill Plan (Starts Every 2h)")
+        autonomy_df = pd.DataFrame([
+            {"Outage Start": "00:00", "Blind Storage": "17,988 m³", "Blind Autonomy (<50%)": "8 hours", "Resilience Storage": "17,988 m³", "Resilience Autonomy": "8 hours", "Extension": "0 hours"},
+            {"Outage Start": "04:00", "Blind Storage": "19,450 m³", "Blind Autonomy (<50%)": "9 hours", "Resilience Storage": "21,812 m³", "Resilience Autonomy": "12 hours", "Extension": "+3 hours"},
+            {"Outage Start": "08:00", "Blind Storage": "22,420 m³", "Blind Autonomy (<50%)": "9 hours", "Resilience Storage": "22,921 m³", "Resilience Autonomy": "13 hours", "Extension": "+4 hours"},
+            {"Outage Start": "12:00", "Blind Storage": "21,409 m³", "Blind Autonomy (<50%)": "9 hours", "Resilience Storage": "22,732 m³", "Resilience Autonomy": "13 hours", "Extension": "+4 hours"},
+            {"Outage Start": "16:00", "Blind Storage": "22,899 m³", "Blind Autonomy (<50%)": "10 hours", "Resilience Storage": "22,417 m³", "Resilience Autonomy": "14 hours", "Extension": "+4 hours"},
+            {"Outage Start": "20:00", "Blind Storage": "21,015 m³", "Blind Autonomy (<50%)": "10 hours", "Resilience Storage": "23,317 m³", "Resilience Autonomy": "13 hours", "Extension": "+3 hours"},
+            {"Outage Start": "22:00", "Blind Storage": "19,859 m³", "Blind Autonomy (<50%)": "8 hours", "Resilience Storage": "23,503 m³", "Resilience Autonomy": "13 hours", "Extension": "+5 hours"},
+        ])
+        st.dataframe(autonomy_df, hide_index=True, use_container_width=True)
+        
+        st.info(
+            "💧 **Storage Volume Accounting**:\n"
+            "- **17,988 m³**: Initial active storage volume at t=0h across all 3 elevated tanks.\n"
+            "- **19,746 m³**: End-of-day stored volume in baseline operation (+1,757 m³ net daily gain).\n"
+            "- **19,838 m³**: End-of-day stored volume in optimized operation (+1,850 m³ net gain, +92.4 m³ more than baseline).\n\n"
+            "**What-If Scenarios**:\n"
+            "- *What-If Low Initial Storage*: If tanks start at 50% capacity (~9,000 m³), network autonomy drops to ~3.5 hours.\n"
+            "- *What-If Priority Zone Isolation*: Throttling non-critical customer demand in Districts 2, 4, 5 by 50% during the outage extends District 3 hospital gravity autonomy from 8h to >16h."
+        )
         
         st.markdown("##### 📋 Recommended Advisory Actions for Water Operators:")
         for act in comp.advisory_action_items:

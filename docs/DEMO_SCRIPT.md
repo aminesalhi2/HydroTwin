@@ -41,10 +41,9 @@
   - Click **"Next ➡️"** (advances to **Step 3: Diurnal Pumping Optimization**).
   - Point to the four metric cards and the 24-hour pump dispatch schedule graph.
 - **Spoken Talk Track**:
-  > *"Water and energy are deeply linked. In **Step 3**, we optimize pump dispatch against the assumed time-of-use tariff (hypothesis, to verify).*  
-  > *Under default operations, pumps run continuously, drawing power during the costly evening peak (18:00 - 21:00 at 0.380 TND/kWh) and generating excessive pressure (>55m head) that stresses aging cast iron pipes.*  
-  > *Our optimizer shifts pumping to off-peak night hours (22:00 - 06:00 at 0.210 TND/kWh) to pre-fill elevated storage tanks.*  
-  > *The simulated result across seasonal profiles: **0 to 583 kWh of electricity saved per day** (mean 292 kWh/day; 0.0 to 206.4 TND/day) under assumed hypothetical time-of-use tariffs, while delivering 100% of customer demand (62,124 m³ delivered in both plans; 0.0% curtailment) and maintaining minimum service pressure ($\ge 15\text{ m}$) across 96% of the city. Furthermore, lowering midday excess pressure directly reduces physical background leakage under Torricelli's law."*
+  > *"Water and energy are deeply linked. In **Step 3**, we optimize pump dispatch through physical duty rebalancing.*  
+  > *Under default operations, high-head intake Pump 10 (head ~73.8m) runs 14 hours/day, drawing 2,805 kWh. Our optimizer rebalances transmission pumping duty by shutting off Pump 10 at 12:00 (-3 hours ON, saving +602 kWh) and relying on lower-head distribution booster Pump 335 (head ~28.8m, +1 hour ON, consuming +310 kWh).*  
+  > *Net daily electricity saved is exactly **292.1 kWh/day (-5.5%)**, yielding 86.2 TND/day under a flat tariff and 33.6 TND/day under assumed TOU tariffs, while delivering 100% of customer demand (62,124 m³ delivered in both plans; 0.0% curtailment) and ending the day with +92.4 m³ higher stored reservoir volume. Crucially, as proven by our decomposition, the savings stem from duty rebalancing across pump heads under the assumption of source interchangeability, not from off-peak timing."*
 
 ---
 

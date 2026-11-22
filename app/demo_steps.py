@@ -34,7 +34,7 @@ DEMO_STEP_METADATA = {
     },
     3: {
         "title": "Step 3: Diurnal Day ➔ Night Transition & Pressure Reduction",
-        "description": "Shift pumping to off-peak night hours (22h-06h). Throttling midday excess pressure reduces background physical leakage under Torricelli's law while saving 0 to 583 kWh/day across seasonal profiles under hypothetical tariffs.",
+        "description": "Rebalance pump duty from high-head intake Pump 10 (head ~73.8m) to lower-head distribution booster Pump 335 (head ~28.8m), saving 292.1 kWh/day (-5.5%) under the operational assumption of source interchangeability.",
         "badge": "⚡ Energy + Water Nexus"
     },
     4: {

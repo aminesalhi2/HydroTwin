@@ -27,7 +27,7 @@ In Japan, municipal utilities (such as Tokyo, Nagoya, and Osaka) have achieved w
 1. **Pressure-Dependent Demand (PDD) Simulation**: Realistic 24-hour hydraulics using WNTR's Wagner PDA solver.
 2. **Municipal Demand Forecasting**: Machine learning demand models with 90% prediction intervals across 5 districts.
 3. **Dual-Track Leak Detection & Localization**: District water balance monitoring + topological graph smoothing that ranks suspect pipes into a Top-5 manifest.
-4. **Energy Optimization under Hypothetical Tariffs**: Shifting pumping to off-peak night hours (saving 0 – 583 kWh/day across seasons, mean 292 kWh/day; 0.0 – 206.4 TND/day) while preserving 100% delivered demand volume.
+4. **Energy Optimization via Hydraulic Duty Rebalancing**: Rebalancing pump duty between high-head intake and low-head booster pumps (saving 292.1 kWh/day, 5.53% saving; 33.6 TND TOU / 86.2 TND Flat) while preserving 100% delivered demand volume under the assumption of source interchangeability.
 5. **Emergency Power Cut Resilience**: Pre-filling storage and utilizing gravity supply to maintain service in Hospital Priority Districts during 4-hour grid blackouts.
 6. **Dense vs. Sparse Sensor Adaptation**: Transparently evaluating Japanese-style dense telemetry (24 sensors) vs. emerging utility sparse telemetry (6 sensors + 1 failing).
 7. **Multilingual Operator Assistant**: Instant work orders and intent-based Q&A in **Arabic (with native RTL)**, **French**, **Japanese**, and **English** with zero hallucinations.
@@ -102,29 +102,32 @@ All metrics are evaluated strictly on **220 unseen test leak scenarios** and **1
 > Candidate pool: All 92 network junction nodes. Both algorithms produce **ONE single ranked list** of candidate nodes per scenario (`Hit@1 <= Hit@3 <= Hit@5`).
 > All figures below were evaluated on the **220 unseen test scenarios** under **sensor noise $\sigma = 0.40\text{ m}$**, with 95% cluster-bootstrap confidence intervals resampled by leak junction cluster (N=36).
 
-| Metric ($\sigma = 0.40\text{ m}$) | Mode | HydroTwin (95% CI) | Nearest-Sensor Baseline (95% CI) | Difference (HT - NS) | Operational Interpretation |
-|---|---|---|---|---|---|
-| **Top-1 Exact Node** ($\sigma = 0.40\text{ m}$) | Rich (24 sens) | **13.2%** [4.5%, 22.6%] | 14.1% [4.6%, 24.5%] | -0.9 pp | Exact junction pin-point |
-| **Top-3 Exact Node** ($\sigma = 0.40\text{ m}$) | Rich (24 sens) | **26.8%** [16.2%, 38.7%] | 24.5% [13.8%, 35.7%] | +2.3 pp | Priority dispatch candidate set |
-| **Top-5 Exact Node** ($\sigma = 0.40\text{ m}$) | Rich (24 sens) | **36.8%** [25.6%, 49.8%] | 29.1% [17.9%, 41.4%] | **+7.7 pp** | **+7.7 pp higher containment than nearest-sensor** |
-| **Top-1 Hop <= 1** ($\sigma = 0.40\text{ m}$) | Rich (24 sens) | **24.5%** [15.2%, 34.7%] | 23.2% [13.6%, 34.2%] | +1.3 pp | Top suspect directly touches leak node |
-| **Top-3 Hop <= 1** ($\sigma = 0.40\text{ m}$) | Rich (24 sens) | **41.8%** [30.5%, 55.5%] | 34.5% [23.7%, 46.6%] | +7.3 pp | High-confidence local neighborhood |
-| **Top-5 Hop <= 1** ($\sigma = 0.40\text{ m}$) | Rich (24 sens) | **50.0%** [38.0%, 62.7%] | 37.3% [26.5%, 49.3%] | **+12.7 pp** | **50.0% of leaks bounded to $\le 1$ junction hop** |
-| **Top-1 Hop <= 2** ($\sigma = 0.40\text{ m}$) | Rich (24 sens) | **37.3%** [26.4%, 49.1%] | 33.6% [23.0%, 45.5%] | +3.7 pp | Within 2-hop search perimeter |
-| **Top-3 Hop <= 2** ($\sigma = 0.40\text{ m}$) | Rich (24 sens) | **51.8%** [39.7%, 65.1%] | 38.6% [27.7%, 50.5%] | +13.2 pp | 51.8% bounded within 2 hops |
-| **Top-5 Hop <= 2** ($\sigma = 0.40\text{ m}$) | Rich (24 sens) | **59.1%** [46.4%, 71.6%] | 46.4% [35.2%, 57.7%] | **+12.7 pp** | **59.1% of leaks bounded to $\le 2$ junction hops** |
-| **Top-1 District** ($\sigma = 0.40\text{ m}$) | Rich (24 sens) | **64.1%** [55.0%, 73.6%] | 53.6% [43.8%, 64.2%] | +10.5 pp | Correct municipal district (vs 20% random) |
-| **Top-3 District** ($\sigma = 0.40\text{ m}$) | Rich (24 sens) | **76.8%** [69.7%, 84.2%] | 57.3% [47.9%, 67.3%] | **+19.5 pp** | **76.8% district containment (+19.5 pp vs NS)** |
-| **Top-5 District** ($\sigma = 0.40\text{ m}$) | Rich (24 sens) | **84.1%** [77.3%, 90.5%] | 70.0% [59.6%, 80.8%] | +14.1 pp | 84.1% district containment |
-| **Mean Hop Distance** ($\sigma = 0.40\text{ m}$) | Rich (24 sens) | **4.6 hops** [3.8, 5.4] | 6.0 hops [4.8, 7.2] | **-1.4 hops** | **HydroTwin is 1.4 hops closer to burst node ($p < 0.05$)** |
-| **Top-1 Exact Node** ($\sigma = 0.40\text{ m}$) | Sparse (6 sens) | **4.1%** [0.0%, 10.6%] | 3.6% [0.0%, 10.0%] | +0.5 pp | Physically bounded under 6 sensors |
-| **Top-3 Exact Node** ($\sigma = 0.40\text{ m}$) | Sparse (6 sens) | **9.5%** [3.7%, 16.2%] | 8.2% [1.8%, 16.4%] | +1.3 pp | Sparse candidate set |
-| **Top-5 Exact Node** ($\sigma = 0.40\text{ m}$) | Sparse (6 sens) | **16.4%** [8.6%, 25.6%] | 12.7% [5.0%, 21.8%] | +3.7 pp | +3.7 pp containment |
-| **Top-5 Hop <= 1** ($\sigma = 0.40\text{ m}$) | Sparse (6 sens) | **29.1%** [19.0%, 41.0%] | 22.3% [12.2%, 34.1%] | +6.8 pp | +6.8 pp improvement |
-| **Top-5 Hop <= 2** ($\sigma = 0.40\text{ m}$) | Sparse (6 sens) | **42.3%** [30.9%, 55.8%] | 29.1% [18.2%, 40.5%] | **+13.2 pp** | **42.3% bounded to $\le 2$ hops (+13.2 pp vs NS)** |
-| **Top-1 District** ($\sigma = 0.40\text{ m}$) | Sparse (6 sens) | **33.6%** [25.7%, 42.9%] | 33.6% [25.5%, 43.4%] | +0.0 pp | **33.6%** (above 20% random baseline) |
-| **Top-3 District** ($\sigma = 0.40\text{ m}$) | Sparse (6 sens) | **45.0%** [35.9%, 56.4%] | 36.4% [28.5%, 45.9%] | **+8.6 pp** | **45.0%** (+8.6 pp vs NS) |
-| **Mean Hop Distance** ($\sigma = 0.40\text{ m}$) | Sparse (6 sens) | **9.0 hops** [7.5, 10.4] | 9.2 hops [7.6, 10.6] | -0.2 hops | Comparable macro-search radius |
+| Metric ($\sigma = 0.40\text{ m}$) | Mode | Random Baseline | Nearest-Sensor (95% CI) | HydroTwin (95% CI) | Paired Diff (HT - NS) (95% CI) | Verdict from CI of Difference |
+|---|---|---|---|---|---|---|
+| **Top-1 Exact Node** | Rich | 1.1% | 14.1% [4.6%, 24.5%] | **13.2%** [4.5%, 22.6%] | -0.9 pp [-3.2, +0.9] | No sig. diff. (CI crosses zero) |
+| **Top-3 Exact Node** | Rich | 3.1% | 24.5% [13.8%, 35.7%] | **26.8%** [16.2%, 38.7%] | +2.3 pp [-3.7, +9.2] | No sig. diff. (CI crosses zero) |
+| **Top-5 Exact Node** | Rich | 5.2% | 29.1% [17.9%, 41.4%] | **36.8%** [25.6%, 49.8%] | **+7.7 pp** [+0.5, +17.1] | **HydroTwin sig. higher** ($p < 0.05$) |
+| **Top-1 Hop <= 1** | Rich | 3.5% | 23.2% [13.6%, 34.2%] | **24.5%** [15.2%, 34.7%] | +1.4 pp [-1.8, +5.0] | No sig. diff. (CI crosses zero) |
+| **Top-3 Hop <= 1** | Rich | 10.5% | 34.5% [23.7%, 46.6%] | **41.8%** [30.5%, 55.5%] | **+7.3 pp** [+0.5, +16.2] | **HydroTwin sig. higher** ($p < 0.05$) |
+| **Top-5 Hop <= 1** | Rich | 16.6% | 37.3% [26.5%, 49.3%] | **50.0%** [38.0%, 62.7%] | **+12.7 pp** [+3.6, +23.1] | **HydroTwin sig. higher** ($p < 0.05$) |
+| **Top-1 Hop <= 2** | Rich | 7.2% | 33.6% [23.0%, 45.5%] | **37.3%** [26.4%, 49.1%] | +3.6 pp [-0.9, +9.2] | No sig. diff. (CI crosses zero) |
+| **Top-3 Hop <= 2** | Rich | 20.1% | 38.6% [27.7%, 50.5%] | **51.8%** [39.7%, 65.1%] | **+13.2 pp** [+5.0, +22.3] | **HydroTwin sig. higher** ($p < 0.05$) |
+| **Top-5 Hop <= 2** | Rich | 31.3% | 46.4% [35.2%, 57.7%] | **59.1%** [46.4%, 71.6%] | **+12.7 pp** [+1.8, +24.2] | **HydroTwin sig. higher** ($p < 0.05$) |
+| **Top-1 District** | Rich | 20.0% (Largest: 23.9%) | 53.6% [43.8%, 64.2%] | **64.1%** [55.0%, 73.6%] | **+10.5 pp** [+4.1, +16.9] | **HydroTwin sig. higher** ($p < 0.05$) |
+| **Top-3 District** | Rich | 60.0% | 57.3% [47.9%, 67.3%] | **76.8%** [69.7%, 84.2%] | **+19.5 pp** [+12.2, +27.1] | **HydroTwin sig. higher** ($p < 0.05$) |
+| **Mean Hop Distance** | Rich | 10.2 hops | 6.0 hops [4.8, 7.2] | **4.6 hops** [3.8, 5.4] | **-1.4 hops** [-2.1, -0.7] | **HydroTwin 1.4 hops closer** ($p < 0.05$) |
+| **Top-1 Exact Node** | Sparse | 1.1% | 3.6% [0.0%, 10.0%] | **4.1%** [0.0%, 10.6%] | +0.5 pp [0.0, +1.4] | Bounds zero; physically limited |
+| **Top-3 Exact Node** | Sparse | 3.1% | 8.2% [1.8%, 16.4%] | **9.5%** [3.7%, 16.2%] | +1.4 pp [-4.1, +7.3] | No sig. diff. (CI crosses zero) |
+| **Top-5 Exact Node** | Sparse | 5.2% | 12.7% [5.0%, 21.8%] | **16.4%** [8.6%, 25.6%] | +3.6 pp [-0.9, +9.2] | No sig. diff. (CI crosses zero) |
+| **Top-1 Hop <= 1** | Sparse | 3.5% | 5.0% [0.5%, 11.6%] | **6.8%** [2.2%, 13.2%] | +1.8 pp [0.0, +4.1] | Bounds zero |
+| **Top-3 Hop <= 1** | Sparse | 10.5% | 15.0% [6.7%, 25.0%] | **21.4%** [13.0%, 32.0%] | **+6.4 pp** [+1.3, +12.9] | **HydroTwin sig. higher** ($p < 0.05$) |
+| **Top-5 Hop <= 1** | Sparse | 16.6% | 22.3% [12.2%, 34.1%] | **29.1%** [19.0%, 41.0%] | +6.8 pp [-0.5, +16.1] | No sig. diff. (CI crosses zero) |
+| **Top-1 Hop <= 2** | Sparse | 7.2% | 15.0% [6.9%, 24.9%] | **15.9%** [7.6%, 25.8%] | +0.9 pp [0.0, +2.8] | Bounds zero |
+| **Top-3 Hop <= 2** | Sparse | 20.1% | 23.2% [13.1%, 35.0%] | **33.2%** [22.5%, 45.4%] | **+10.0 pp** [+1.4, +19.4] | **HydroTwin sig. higher** ($p < 0.05$) |
+| **Top-5 Hop <= 2** | Sparse | 31.3% | 29.1% [18.2%, 40.5%] | **42.3%** [30.9%, 55.8%] | **+13.2 pp** [+4.5, +24.3] | **HydroTwin sig. higher** ($p < 0.05$) |
+| **Top-1 District** | Sparse | 20.0% (Largest: 23.9%) | 33.6% [25.5%, 43.4%] | **33.6%** [25.7%, 42.9%] | 0.0 pp [-2.3, +2.7] | Identical performance |
+| **Top-3 District** | Sparse | 60.0% | 36.4% [28.5%, 45.9%] | **45.0%** [35.9%, 56.4%] | **+8.6 pp** [+3.6, +14.7] | **HydroTwin sig. higher** ($p < 0.05$) |
+| **Mean Hop Distance** | Sparse | 10.2 hops | 9.2 hops [7.6, 10.6] | **9.0 hops** [7.5, 10.4] | **-0.2 hops** [-0.3, -0.1] | **HydroTwin sig. closer** ($p < 0.05$) |
 
 *Detection Recall*: Rich = **55.5%** (delay 2.7h, 98 undetected); Sparse = **49.5%** (delay 4.3h, 111 undetected).  
 *False Alarm Rate*: **0.0%** (0 false alarms on 110 healthy days).
@@ -195,6 +198,12 @@ While physical leaks sit at junction nodes, utility operators often schedule rep
   - **Delivered Customer Demand Volume**: **62,124.2 m³** baseline vs. **62,124.2 m³** optimized (**0.0 m³ curtailment, 100% delivered demand preserved**).
   - **Delivered Specific Energy**: **0.0851 kWh/m³** baseline $\rightarrow$ **0.0803 kWh/m³** optimized (-0.0048 kWh/m³, **-5.53% ~ 5.6% efficiency gain**).
   - **Nominal 24h Pumping Energy**: **5,283.69 kWh** baseline $\rightarrow$ **4,991.61 kWh** optimized (**saving 292.08 kWh/day, -5.53% ~ 5.6%**).
+  - **Flat vs. Assumed TOU Tariff Decomposition**:
+    - Flat Tariff (0.2950 TND/kWh): Baseline = 1,558.7 TND $\rightarrow$ Opt = 1,472.5 TND (**saving 86.2 TND/day, -5.53%**).
+    - Assumed TOU Tariff: Baseline = 1,262.8 TND $\rightarrow$ Opt = 1,229.2 TND (**saving 33.6 TND/day, -2.66%**).
+    - Timing Effect (TOU - Flat): **-52.6 TND** (effective rate rises from 0.2390 to 0.2462 TND/kWh).
+    - **Conclusive Proof**: Savings stem 100% from hydraulic duty rebalancing between high-head Pump 10 (head 73.8m, -3h / -602.1 kWh) and lower-head Pump 335 (head 28.8m, +1h / +310.0 kWh), NOT from off-peak timing.
+    - **Assumption**: *Water sources are treated as interchangeable (no source limits, quality or water-rights constraints).*
   - **Exact Per-Pump Decomposition**:
     - High-head intake Pump 10 (73.8m head): 2,805.29 kWh $\rightarrow$ 2,203.18 kWh (**saves +602.11 kWh**).
     - Lower-head booster Pump 335 (28.8m head): 2,478.40 kWh $\rightarrow$ 2,788.43 kWh (**adds -310.03 kWh**).
@@ -216,6 +225,15 @@ While physical leaks sit at junction nodes, utility operators often schedule rep
   - Tank 3 reaches minimum level (1.22m) at **Hour 8**, completely exhausting all 17,988 m³ of active storage.
   - Network compliance collapses catastrophically: Hour 7 (91.3%) $\rightarrow$ **Hour 8 (1.1%)**, and District 3 collapses from 84.6% to **0.0%**.
   - **Conclusion**: Outages are NOT harmless. Storage sustains the city for **7.5 hours**, beyond which total water collapse occurs.
+- **2-Hour Autonomy Sweep (Starts 00:00 to 22:00)**:
+  - Outage-blind autonomy (<50% compliance): **8 to 12 hours** depending on diurnal starting level.
+  - Resilience pre-fill plan autonomy: **8 to 14 hours**, extending autonomy by **+1 to +5 hours** for daytime/evening outages (02:00 to 22:00) by pre-filling reservoirs.
+- **Storage Accounting & What-If Scenarios**:
+  - **17,988 m³**: Initial active storage at $t=0\text{h}$ across all 3 elevated tanks (Tank 1: 2,050 m³, Tank 2: 4,050 m³, Tank 3: 11,888 m³).
+  - **19,746 m³**: Stored volume at $t=24\text{h}$ in baseline (+1,757 m³ net daily gain).
+  - **19,838 m³**: Stored volume at $t=24\text{h}$ in optimized schedule (+1,850 m³ net daily gain, +92.4 m³ more than baseline).
+  - *What-If Low Initial Storage*: At 50% initial volume (~9,000 m³), network autonomy drops to **~3.5 hours**.
+  - *What-If Priority Zone Isolation*: Throttling non-critical demand in Districts 2, 4, 5 by 50% during an outage extends District 3 hospital autonomy from 8 hours to **>16 hours**.
 - **Hospital Priority Sector (District 3) No-Outage Control**:
   - All 13 District 3 Nodes: **92.3%** compliance ($\ge 18\text{m}$).
   - Reachable 12 Nodes (excluding Node 20): **100.0%** compliance.

@@ -23,7 +23,7 @@ flowchart TD
         ANOMALY["Dual-Track Anomaly Detector (Isolation Forest + Water Balance Gap >12%)"]
         LOCALIZER["Topological Leak Localizer (Residual Drop + Graph-Distance Smoothing)"]
         TRANSFER["Sensor Topology Transfer (Random Sensor Masking & Fine-Tuning)"]
-        OPTIMIZER["TOU Pump Dispatch Planner (STEG Tariff Schedule Off-Peak Shift)"]
+        OPTIMIZER["Pump Dispatch Planner (Hydraulic Duty Rebalancing Across Heads)"]
         RESILIENCE["Resilience Contingency Engine (Pump Outage + Hospital Protection)"]
     end
 
@@ -77,7 +77,7 @@ flowchart TD
     - Off-peak (22:00 - 06:00): `0.210 TND/kWh`
     - Standard daytime (06:00 - 18:00, 21:00 - 22:00): `0.295 TND/kWh`
     - Peak window (18:00 - 21:00): `0.380 TND/kWh`
-  - Restructures pump dispatch to pre-fill elevated storage tanks during off-peak hours and idle secondary booster pumps during the high-tariff peak.
+  - Restructures pump dispatch via hydraulic duty rebalancing between high-head Pump 10 (73.8m head) and lower-head Pump 335 (28.8m head), shutting off Pump 10 at 12:00 to save 292.1 kWh/day (-5.5%) under the assumption of source interchangeability.
   - Enforces minimum service pressure constraints ($\ge 15\text{ m}$) while penalizing excess pressure ($> 55\text{ m}$) that accelerates pipe burst rates.
   - Evaluates against the mandatory Net3 default operational control baseline.
 - **Power Grid Outage Resilience (`planner/resilience.py`)**:
